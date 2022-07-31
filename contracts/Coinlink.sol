@@ -26,8 +26,7 @@ contract Coinlink {
         require(owner == msg.sender, "Not owner");
     }
 
-    function withdraw() restricted public {
-        require(owner == msg.sender);
-        owner.transfer(address(this).balance);
-    }
+//    function withdraw() restricted public {
+//        owner.transfer(address(this).balance);
+//    }
 }
