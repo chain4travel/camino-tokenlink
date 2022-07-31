@@ -13,22 +13,21 @@ contract Coinlink {
         owner = _owner;
     }
 
-//    function initialize(address payable _owner) initializer public {
-//        owner = _owner;
-//    }
-//
-//    function withdraw() public {
-//        require(owner == msg.sender);
-//        owner.transfer(address(this).balance);
-//    }
-//
-//    modifier restricted() {
-//        _restricted();
-//        _;
-//    }
-//
-//    function _restricted() internal view {
-//        require(hasRole(DEFAULT_ADMIN_ROLE, msg.sender), "NA");
-//    }
+    modifier restricted() {
+        _restricted();
+        _;
+    }
 
+    function changeOwner(address newOwner) public restricted {
+        owner = newOwner;
+    }
+
+    function _restricted() internal view {
+        require(owner == msg.sender, "Not owner");
+    }
+
+    function withdraw() restricted public {
+        require(owner == msg.sender);
+        owner.transfer(address(this).balance);
+    }
 }
