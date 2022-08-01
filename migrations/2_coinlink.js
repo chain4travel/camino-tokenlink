@@ -1,7 +1,5 @@
 const CoinlinkFactory = artifacts.require("CoinlinkFactory");
-const Camino = artifacts.require("Camino");
 
-module.exports = function (deployer) {
-    deployer.deploy(Camino);
-    deployer.deploy(CoinlinkFactory);
+module.exports = async function (deployer) {
+    await deployer.deploy(CoinlinkFactory);
 };
