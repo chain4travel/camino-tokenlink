@@ -1,5 +1,6 @@
-const CoinlinkFactory = artifacts.require("CoinlinkFactory");
+const {deployProxy} = require('@openzeppelin/truffle-upgrades');
+const Coinlink = artifacts.require("Coinlink");
 
 module.exports = async function (deployer) {
-    await deployer.deploy(CoinlinkFactory);
+    await deployProxy(Coinlink, [], {deployer});
 };

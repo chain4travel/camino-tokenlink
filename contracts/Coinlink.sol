@@ -2,31 +2,40 @@
 pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
+import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
+import "./Account.sol";
 
-contract Coinlink {
+contract Coinlink is Initializable {
 
-    address public owner;
+    IERC20 public camToken;
+    uint public initialAmount;
 
-    constructor(address _owner) {
-        owner = _owner;
+    event Deploy(address addr);
+
+    function initialize() public initializer {
+        initialAmount = 100 ether;
     }
 
-    modifier restricted() {
-        _restricted();
-        _;
+    function deploy(uint _salt) public {
+        Account _contract = new Account{salt : bytes32(_salt)}(msg.sender);
+        camToken.transfer(address(_contract), initialAmount);
+        emit Deploy(address(_contract));
     }
 
-    function changeOwner(address newOwner) public restricted {
-        owner = newOwner;
+    function setCamTokenAddress(address _camToken) public {
+        camToken = IERC20(_camToken);
     }
 
-    function _restricted() internal view {
-        require(owner == msg.sender, "Not owner");
+    function getAddress(bytes memory bytecode, uint _salt) public view returns (address) {
+        bytes32 hash = keccak256(abi.encodePacked(bytes1(0xff), address(this), _salt, keccak256(bytecode)));
+        return address(uint160(uint(hash)));
     }
 
-//    function withdraw() restricted public {
-//        owner.transfer(address(this).balance);
-//    }
+    function getBytecode(address _owner) public pure returns (bytes memory) {
+        bytes memory bytecode = type(Account).creationCode;
+        return abi.encodePacked(bytecode, abi.encode(_owner));
+    }
+
 }
