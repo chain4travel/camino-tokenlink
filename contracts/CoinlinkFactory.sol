@@ -5,25 +5,23 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
-import "./Account.sol";
+import "./Coinlink.sol";
 
-contract Coinlink {
+contract CoinlinkFactory is Initializable {
 
-    address public owner;
     IERC20 public camToken;
     mapping(uint256 => uint256) public vars;
     uint8 public constant VAR_INITIAL_AMOUNT = 0;
-    uint8 public constant VAR_REVIEW_REWARD = 1;
 
     event Deploy(address addr);
 
-    constructor(address _owner, uint _initialAmount) {
-        owner = _owner;
-        vars[VAR_INITIAL_AMOUNT] = _initialAmount;
+    function initialize(address _camToken) public initializer {
+        camToken = IERC20(_camToken);
+        vars[VAR_INITIAL_AMOUNT] = 100000 ether;
     }
 
-    function deploy(uint _salt) public {
-        Account _contract = new Account{salt : bytes32(_salt)}(msg.sender);
+    function deploy(uint _salt, uint _initialAmount) public {
+        Coinlink _contract = new Coinlink{salt : bytes32(_salt)}(msg.sender, _initialAmount);
         camToken.transfer(address(_contract), vars[VAR_INITIAL_AMOUNT]);
         emit Deploy(address(_contract));
     }
