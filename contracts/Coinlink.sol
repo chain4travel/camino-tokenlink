@@ -10,17 +10,19 @@ import "./Account.sol";
 contract Coinlink is Initializable {
 
     IERC20 public camToken;
-    uint public initialAmount;
+    mapping(uint256 => uint256) public vars;
+    uint8 public constant VAR_INITIAL_AMOUNT = 0;
+    uint8 public constant VAR_REVIEW_REWARD = 1;
 
     event Deploy(address addr);
 
     function initialize() public initializer {
-        initialAmount = 100 ether;
+        vars[VAR_INITIAL_AMOUNT] = 100 ether;
     }
 
     function deploy(uint _salt) public {
         Account _contract = new Account{salt : bytes32(_salt)}(msg.sender);
-        camToken.transfer(address(_contract), initialAmount);
+        camToken.transfer(address(_contract), vars[VAR_INITIAL_AMOUNT]);
         emit Deploy(address(_contract));
     }
 

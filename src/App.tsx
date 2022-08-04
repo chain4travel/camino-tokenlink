@@ -59,7 +59,7 @@ function App() {
         try {
             const contract = new ethers.Contract((coinlink.networks as Networks)[networkId]?.address as string, coinlink.abi, ethersProvider);
             console.log(contract);
-            const result = await contract.initialAmount();
+            const result = await contract.vars(0);
             console.log(ethers.utils.formatEther(result));
             console.log('change');
         } catch (error) {
