@@ -1,13 +1,12 @@
 import React, {useState} from 'react';
 import logo from './logo.svg';
 import './App.css';
-import {TextField} from "@mui/material";
+import {Button, TextField} from "@mui/material";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
-import {ethers, providers} from "ethers";
-import coinlinkFactory from '@coinlink/contracts/CoinlinkFactory.json';
-import camino from '@coinlink/contracts/Camino.json';
+import {ethers} from "ethers";
+import {deployCoinlink, getCoinlinkFactoryInitialAmount} from "./services/web3Service";
 
 export const providerOptions = {
     coinbasewallet: {
@@ -24,9 +23,6 @@ export const providerOptions = {
         }
     }
 };
-
-let networkId = '5777';
-export type Networks = Partial<Record<string, { address: string }>>;
 
 function App() {
     const [provider, setProvider] = useState();
@@ -56,33 +52,19 @@ function App() {
 
     const contractInteraction = async () => {
         if (!provider) return;
-        const ethersProvider = new providers.Web3Provider(provider);
         try {
-            const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, ethersProvider);
-            console.log(contract);
-            const result = await contract.vars(0);
-            console.log('Initial amount, factory: ', ethers.utils.formatEther(result));
+            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
+            console.log('initialAmount', ethers.utils.formatEther(initialAmount));
         } catch (error) {
             console.error(error);
         }
     }
 
-    const deployCoinlink = async () => {
+    const onDeployCoinlink = async () => {
         if (!provider) return;
-        const ethersProvider = new providers.Web3Provider(provider);
-        const signer = ethersProvider.getSigner();
-        const salt = 7;
         try {
-            const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
-            const caminoContract = new ethers.Contract((camino.networks as Networks)[networkId]?.address as string, camino.abi, signer);
-            const balance = await caminoContract.balanceOf(contract.address);
-            console.log('Balance of contract: ', ethers.utils.formatEther(balance));
-            const amountNeeded = await contract.vars(0);
-            console.log('Amount needed: ', ethers.utils.formatEther(amountNeeded));
-            const result = await contract.deploy(salt, ethers.utils.parseEther('100'));
-            console.log('Deployed contract: ', result.address);
-            console.log('Deployed: ', result);
-            console.log(await contract.coinlinks(0));
+            const result = await deployCoinlink(1, '1', provider);
+            console.log('result', result);
         } catch (error) {
             console.error(error);
         }
@@ -92,19 +74,11 @@ function App() {
             <header className="App-header">
                 <img src={logo} className="App-logo" alt="logo"/>
                 <TextField label="Outlined" variant="outlined"/>
-                <button onClick={connectWallet}>Connect Wallet</button>
+                <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
-                <button onClick={contractInteraction}>Interact with Contract</button>
-                <button onClick={deployCoinlink}>Deploy Coinlink</button>
-                <a
-                    className="App-link"
-                    href="https://reactjs.org"
-                    target="_blank"
-                    rel="noopener noreferrer"
-                >
-                    Learn React
-                </a>
+                <Button variant="contained" onClick={contractInteraction}>Interact with Contract</Button>
+                <Button variant="contained" onClick={onDeployCoinlink}>Deploy Coinlink</Button>
             </header>
         </div>
     );
