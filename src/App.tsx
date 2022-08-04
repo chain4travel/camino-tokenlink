@@ -6,7 +6,8 @@ import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
 import {ethers, providers} from "ethers";
-import coinlink from '@coinlink/contracts/Coinlink.json';
+import coinlinkFactory from '@coinlink/contracts/CoinlinkFactory.json';
+import camino from '@coinlink/contracts/Camino.json';
 
 export const providerOptions = {
     coinbasewallet: {
@@ -57,15 +58,34 @@ function App() {
         if (!provider) return;
         const ethersProvider = new providers.Web3Provider(provider);
         try {
-            const contract = new ethers.Contract((coinlink.networks as Networks)[networkId]?.address as string, coinlink.abi, ethersProvider);
+            const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, ethersProvider);
             console.log(contract);
             const result = await contract.vars(0);
-            console.log(ethers.utils.formatEther(result));
-            console.log('change');
+            console.log('Initial amount, factory: ', ethers.utils.formatEther(result));
         } catch (error) {
             console.error(error);
         }
+    }
 
+    const deployCoinlink = async () => {
+        if (!provider) return;
+        const ethersProvider = new providers.Web3Provider(provider);
+        const signer = ethersProvider.getSigner();
+        const salt = 7;
+        try {
+            const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
+            const caminoContract = new ethers.Contract((camino.networks as Networks)[networkId]?.address as string, camino.abi, signer);
+            const balance = await caminoContract.balanceOf(contract.address);
+            console.log('Balance of contract: ', ethers.utils.formatEther(balance));
+            const amountNeeded = await contract.vars(0);
+            console.log('Amount needed: ', ethers.utils.formatEther(amountNeeded));
+            const result = await contract.deploy(salt, ethers.utils.parseEther('100'));
+            console.log('Deployed contract: ', result.address);
+            console.log('Deployed: ', result);
+            console.log(await contract.coinlinks(0));
+        } catch (error) {
+            console.error(error);
+        }
     }
     return (
         <div className="App">
@@ -76,6 +96,7 @@ function App() {
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
                 <button onClick={contractInteraction}>Interact with Contract</button>
+                <button onClick={deployCoinlink}>Deploy Coinlink</button>
                 <a
                     className="App-link"
                     href="https://reactjs.org"
