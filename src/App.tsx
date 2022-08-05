@@ -6,7 +6,7 @@ import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
 import {ethers} from "ethers";
-import {deployCoinlink, getCoinlinkFactoryInitialAmount} from "./services/web3Service";
+import {deployCoinlink, getCoinlinkFactoryInitialAmount, getDeployedCoinlinks} from "./services/web3Service";
 
 export const providerOptions = {
     coinbasewallet: {
@@ -29,6 +29,7 @@ function App() {
     const [, setLibrary] = useState({});
     const [account, setAccount] = useState('');
     const [, setNetwork] = useState({});
+    const [coinlinks, setCoinlinks] = useState([]);
     const web3Modal = new Web3Modal({
         cacheProvider: true,
         providerOptions
@@ -65,6 +66,18 @@ function App() {
         try {
             const result = await deployCoinlink('1', provider);
             console.log('result', result);
+            setCoinlinks(await getDeployedCoinlinks(provider));
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const onGetDeployedCoinlinks = async () => {
+        if (!provider) return;
+        try {
+            const result = await getDeployedCoinlinks(provider);
+            console.log('result', result);
+            setCoinlinks(result);
         } catch (error) {
             console.error(error);
         }
@@ -79,6 +92,8 @@ function App() {
                 <div>Wallet Address: {account}</div>
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <Button variant="contained" onClick={onDeployCoinlink}>Deploy Coinlink</Button>
+                <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
+                {coinlinks.map((coinlink, index) => <div key={index}>{coinlink}</div>)}
             </header>
         </div>
     );

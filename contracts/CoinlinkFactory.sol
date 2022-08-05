@@ -46,8 +46,16 @@ contract CoinlinkFactory is Initializable {
         return abi.encodePacked(bytecode, abi.encode(_owner));
     }
 
-    function getLastDeployed() public view returns (Coinlink) {
-        return coinlinks[coinlinks.length - 1];
+    function getDeployedContracts() public view returns (address[] memory addresses) {
+        addresses = new address[](coinlinks.length);
+        for (uint i = 0; i < coinlinks.length; i++) {
+            addresses[i] = address(coinlinks[i]);
+        }
+        return addresses;
+    }
+
+    function getLastDeployed() public view returns (address) {
+        return address(coinlinks[coinlinks.length - 1]);
     }
 
 }

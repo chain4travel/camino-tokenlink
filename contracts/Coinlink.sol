@@ -48,8 +48,16 @@ contract Coinlink {
         return abi.encodePacked(bytecode, abi.encode(_owner));
     }
 
-    function getLastDeployed() public view returns (Account) {
-        return accounts[accounts.length - 1];
+    function getDeployedContracts() public view returns (address[] memory addresses) {
+        addresses = new address[](accounts.length);
+        for (uint i = 0; i < accounts.length; i++) {
+            addresses[i] = address(accounts[i]);
+        }
+        return addresses;
+    }
+
+    function getLastDeployed() public view returns (address) {
+        return address(accounts[accounts.length - 1]);
     }
 
 }

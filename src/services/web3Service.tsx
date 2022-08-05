@@ -16,3 +16,9 @@ export const getCoinlinkFactoryInitialAmount = async (provider: ethers.providers
     const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
     return await contract.vars(0);
 }
+
+export const getDeployedCoinlinks = async (provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
+    const signer = new providers.Web3Provider(provider).getSigner();
+    const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
+    return await contract.getDeployedContracts();
+}
