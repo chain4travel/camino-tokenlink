@@ -12,6 +12,7 @@ contract Coinlink {
     using Counters for Counters.Counter;
 
     Counters.Counter private accountIds;
+    Account[] public accounts;
     address public owner;
     IERC20 public camToken;
     mapping(uint256 => uint256) public vars;
@@ -29,6 +30,7 @@ contract Coinlink {
         accountIds.increment();
         Account _contract = new Account{salt : bytes32(accountIds.current())}(msg.sender);
         camToken.transfer(address(_contract), vars[VAR_INITIAL_AMOUNT]);
+        accounts.push(_contract);
         emit Deploy(address(_contract));
     }
 
@@ -44,6 +46,10 @@ contract Coinlink {
     function getBytecode(address _owner) public pure returns (bytes memory) {
         bytes memory bytecode = type(Account).creationCode;
         return abi.encodePacked(bytecode, abi.encode(_owner));
+    }
+
+    function getLastDeployed() public view returns (Account) {
+        return accounts[accounts.length - 1];
     }
 
 }
