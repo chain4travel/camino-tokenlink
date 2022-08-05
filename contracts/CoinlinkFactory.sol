@@ -4,11 +4,14 @@ pragma solidity ^0.8.10;
 import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
+import "@openzeppelin/contracts/utils/Counters.sol";
 import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Coinlink.sol";
 
 contract CoinlinkFactory is Initializable {
+    using Counters for Counters.Counter;
 
+    Counters.Counter private coinlinkIds;
     Coinlink[] public coinlinks;
     IERC20 public camToken;
     mapping(uint256 => uint256) public vars;
@@ -21,8 +24,9 @@ contract CoinlinkFactory is Initializable {
         vars[VAR_INITIAL_AMOUNT] = 1000 ether;
     }
 
-    function deploy(uint _salt, uint _initialAmount) public {
-        Coinlink _contract = new Coinlink{salt : bytes32(_salt)}(msg.sender, _initialAmount);
+    function deploy(uint _initialAmount) public {
+        coinlinkIds.increment();
+        Coinlink _contract = new Coinlink{salt : bytes32(coinlinkIds.current())}(msg.sender, _initialAmount);
         camToken.transfer(address(_contract), vars[VAR_INITIAL_AMOUNT]);
         coinlinks.push(_contract);
         emit Deploy(address(_contract));

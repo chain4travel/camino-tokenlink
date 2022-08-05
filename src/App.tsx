@@ -50,7 +50,7 @@ function App() {
         }
     };
 
-    const contractInteraction = async () => {
+    const onGetInitialAmount = async () => {
         if (!provider) return;
         try {
             const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
@@ -63,7 +63,7 @@ function App() {
     const onDeployCoinlink = async () => {
         if (!provider) return;
         try {
-            const result = await deployCoinlink(1, '1', provider);
+            const result = await deployCoinlink('1', provider);
             console.log('result', result);
         } catch (error) {
             console.error(error);
@@ -77,7 +77,7 @@ function App() {
                 <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
-                <Button variant="contained" onClick={contractInteraction}>Interact with Contract</Button>
+                <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <Button variant="contained" onClick={onDeployCoinlink}>Deploy Coinlink</Button>
             </header>
         </div>
