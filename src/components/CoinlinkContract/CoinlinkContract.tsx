@@ -15,7 +15,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     }
 
     return (
-        <div>
+        <div className="CoinlinkContract flex flex-col border-2">
             {props.coinlinkContract.address}
             <Button variant="contained" onClick={onDeployAccount}>Deploy Account</Button>
         </div>
