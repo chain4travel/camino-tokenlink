@@ -7,6 +7,7 @@ import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
 import {ethers} from "ethers";
 import {deployCoinlink, getCoinlinkFactoryInitialAmount, getDeployedCoinlinks} from "./services/web3Service";
+import CoinlinkContract from "./components/CoinlinkContract/CoinlinkContract";
 
 export const providerOptions = {
     coinbasewallet: {
@@ -93,7 +94,7 @@ function App() {
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <Button variant="contained" onClick={onDeployCoinlink}>Deploy Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
-                {coinlinks.map((coinlink, index) => <div key={index}>{coinlink}</div>)}
+                {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink} />)}
             </header>
         </div>
     );

@@ -21,9 +21,10 @@ contract Coinlink {
 
     event Deploy(address addr);
 
-    constructor(address _owner, uint _initialAmount) {
+    constructor(address _owner, uint _initialAmount, address _camToken) {
         owner = _owner;
         vars[VAR_INITIAL_AMOUNT] = _initialAmount;
+        camToken = IERC20(_camToken);
     }
 
     function deploy() public {
