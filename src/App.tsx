@@ -1,5 +1,4 @@
-import React, {useState} from 'react';
-import logo from './logo.svg';
+import React, {useEffect, useState} from 'react';
 import './App.css';
 import {Button, TextField} from "@mui/material";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
@@ -31,10 +30,28 @@ function App() {
     const [account, setAccount] = useState('');
     const [, setNetwork] = useState({});
     const [coinlinks, setCoinlinks] = useState([]);
+    const [initialAmount, setInitialAmount] = useState('');
+
     const web3Modal = new Web3Modal({
         cacheProvider: true,
         providerOptions
     });
+
+    useEffect(() => {
+        const fetchData = async () => {
+            const provider = await web3Modal.connect();
+            const library = new ethers.providers.Web3Provider(provider);
+            const accounts = await library.listAccounts();
+            const network = await library.getNetwork();
+            setProvider(provider);
+            setLibrary(library);
+            if (accounts) setAccount(accounts[0]);
+            setNetwork(network);
+            setCoinlinks(await getDeployedCoinlinks(provider));
+        }
+        fetchData().catch(console.error);
+    }, []);
+
     const connectWallet = async () => {
         try {
             const provider = await web3Modal.connect();
@@ -63,9 +80,9 @@ function App() {
     }
 
     const onDeployCoinlink = async () => {
-        if (!provider) return;
+        if (!provider || !initialAmount) return;
         try {
-            const result = await deployCoinlink('1', provider);
+            const result = await deployCoinlink(initialAmount, provider);
             console.log('result', result);
             setCoinlinks(await getDeployedCoinlinks(provider));
         } catch (error) {
@@ -83,18 +100,27 @@ function App() {
             console.error(error);
         }
     }
+
+    const handleInitialAmountChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setInitialAmount(event.target.value);
+    };
+
     return (
         <div className="App">
-            <header className="App-header">
-                <img src={logo} className="App-logo" alt="logo"/>
-                <TextField label="Outlined" variant="outlined"/>
+            <header className="App-header gap-2">
                 <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
-                <Button variant="contained" onClick={onDeployCoinlink}>Deploy Coinlink</Button>
+                <div>
+                    <TextField label="Initial amount" value={initialAmount} type="number" onChange={handleInitialAmountChange}/>
+                    <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || !initialAmount}>Deploy
+                        Coinlink</Button>
+                </div>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
-                {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink} />)}
+                <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
+                    {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink}/>)}
+                </div>
             </header>
         </div>
     );
