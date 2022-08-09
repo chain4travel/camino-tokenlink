@@ -113,13 +113,15 @@ function App() {
                 <div>Wallet Address: {account}</div>
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <div>
-                    <TextField label="Initial amount" value={initialAmount} type="number" onChange={handleInitialAmountChange}/>
+                    <TextField label="Initial amount" value={initialAmount} type="number"
+                               onChange={handleInitialAmountChange}/>
                     <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || !initialAmount}>Deploy
                         Coinlink</Button>
                 </div>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
-                    {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink}/>)}
+                    {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink}
+                                                                          web3Modal={web3Modal}/>)}
                 </div>
             </header>
         </div>

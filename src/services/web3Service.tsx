@@ -1,6 +1,7 @@
 import {ethers, providers} from "ethers";
 import coinlinkFactory from '@coinlink/contracts/CoinlinkFactory.json';
 import coinlink from '@coinlink/contracts/Coinlink.json';
+import account from '@coinlink/contracts/Account.json';
 
 let networkId = '5777';
 export type Networks = Partial<Record<string, { address: string }>>;
@@ -28,4 +29,11 @@ export const getDeployedCoinlinks = async (provider: ethers.providers.ExternalPr
 
 export const deployAccount = async (coinlinkContract: ethers.Contract) => {
     return await coinlinkContract.deploy();
+}
+
+export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
+    const signer = new providers.Web3Provider(provider).getSigner();
+    return (await coinlinkContract.getDeployedContracts()).map((address: string) => {
+        return new ethers.Contract(address, account.abi, signer);
+    });
 }

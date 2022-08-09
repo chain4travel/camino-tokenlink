@@ -2,16 +2,20 @@ import React, {FC, useEffect, useState} from 'react';
 import './CoinlinkContract.css';
 import {ethers} from "ethers";
 import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
-import {deployAccount} from "../../services/web3Service";
+import {deployAccount, getDeployedAccounts} from "../../services/web3Service";
+import Web3Modal from "web3modal";
+import AccountContract from "../AccountContract/AccountContract";
 
 interface CoinlinkContractProps {
     coinlinkContract: ethers.Contract;
+    web3Modal: Web3Modal;
 }
 
 const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const [initialAmount, setInitialAmount] = useState('');
     const [reviewReward, setReviewReward] = useState('');
     const [owner, setOwner] = useState('');
+    const [accounts, setAccounts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -21,6 +25,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
             setReviewReward(ethers.utils.formatEther(varReviewReward));
             const varOwner = await props.coinlinkContract.owner();
             setOwner(varOwner);
+            await fetchAccounts();
         }
         fetchData().catch(console.error);
     }, []);
@@ -28,6 +33,14 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const onDeployAccount = async () => {
         const result = await deployAccount(props.coinlinkContract);
         console.log(result);
+        await fetchAccounts();
+    }
+
+    const fetchAccounts = async () => {
+        const provider = await props.web3Modal.connect();
+        const accounts = await getDeployedAccounts(props.coinlinkContract, provider);
+        console.log(accounts);
+        setAccounts(accounts);
     }
 
     return (
@@ -48,9 +61,13 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     Review reward: {reviewReward} CAM
                     <br/>
                 </Typography>
+                <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
+                    {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
+                </div>
             </CardContent>
             <CardActions>
                 <Button size="small" onClick={onDeployAccount}>Deploy Account</Button>
+                <Button size="small" onClick={fetchAccounts}>Fetch Accounts</Button>
             </CardActions>
         </Card>
     )
