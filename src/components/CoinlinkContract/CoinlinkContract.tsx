@@ -1,6 +1,6 @@
 import React, {FC, useEffect, useState} from 'react';
 import './CoinlinkContract.css';
-import {ethers} from "ethers";
+import {ethers, providers} from "ethers";
 import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
 import {deployAccount, getDeployedAccounts} from "../../services/web3Service";
 import Web3Modal from "web3modal";
@@ -14,6 +14,7 @@ interface CoinlinkContractProps {
 const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const [initialAmount, setInitialAmount] = useState('');
     const [reviewReward, setReviewReward] = useState('');
+    const [balance, setBalance] = useState('');
     const [owner, setOwner] = useState('');
     const [accounts, setAccounts] = useState([]);
 
@@ -26,14 +27,22 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
             const varOwner = await props.coinlinkContract.owner();
             setOwner(varOwner);
             await fetchAccounts();
+            await fetchBalance();
         }
         fetchData().catch(console.error);
     }, []);
+
+    const fetchBalance = async () => {
+        const provider = new providers.Web3Provider(await props.web3Modal.connect());
+        const balance = await provider.getBalance(props.coinlinkContract.address);
+        setBalance(ethers.utils.formatEther(balance));
+    }
 
     const onDeployAccount = async () => {
         const result = await deployAccount(props.coinlinkContract);
         console.log(result);
         await fetchAccounts();
+        await fetchBalance();
     }
 
     const fetchAccounts = async () => {
@@ -60,6 +69,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     <br/>
                     Review reward: {reviewReward} CAM
                     <br/>
+                    Balance: {balance} CAM
                 </Typography>
                 <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                     {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}

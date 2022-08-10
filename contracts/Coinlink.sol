@@ -5,38 +5,36 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "@openzeppelin/contracts/token/ERC20/IERC20.sol";
 import "./Account.sol";
 
 contract Coinlink {
     using Counters for Counters.Counter;
+    event Received(address, uint);
 
     Counters.Counter private accountIds;
     Account[] public accounts;
     address public owner;
-    IERC20 public camToken;
     mapping(uint256 => uint256) public vars;
     uint8 public constant VAR_INITIAL_AMOUNT = 0;
     uint8 public constant VAR_REVIEW_REWARD = 1;
 
     event Deploy(address addr);
 
-    constructor(address _owner, uint _initialAmount, address _camToken) {
+    constructor(address _owner, uint _initialAmount) {
         owner = _owner;
         vars[VAR_INITIAL_AMOUNT] = _initialAmount;
-        camToken = IERC20(_camToken);
+    }
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 
     function deploy() public {
         accountIds.increment();
         Account _contract = new Account{salt : bytes32(accountIds.current())}(msg.sender);
-        camToken.transfer(address(_contract), vars[VAR_INITIAL_AMOUNT]);
+        payable(_contract).transfer(vars[VAR_INITIAL_AMOUNT]);
         accounts.push(_contract);
         emit Deploy(address(_contract));
-    }
-
-    function setCamTokenAddress(address _camToken) public {
-        camToken = IERC20(_camToken);
     }
 
     function getAddress(bytes memory bytecode, uint _salt) public view returns (address) {

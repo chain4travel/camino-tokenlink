@@ -6,8 +6,9 @@ import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol"
 import "@openzeppelin/contracts/utils/Create2.sol";
 
 contract Account {
-
     address public owner;
+
+    event Received(address, uint);
 
     constructor(address _owner) {
         owner = _owner;
@@ -16,6 +17,10 @@ contract Account {
     modifier restricted() {
         _restricted();
         _;
+    }
+
+    receive() external payable {
+        emit Received(msg.sender, msg.value);
     }
 
     function changeOwner(address newOwner) public restricted {

@@ -28,7 +28,7 @@ export const getDeployedCoinlinks = async (provider: ethers.providers.ExternalPr
 }
 
 export const deployAccount = async (coinlinkContract: ethers.Contract) => {
-    return await coinlinkContract.deploy();
+    return coinlinkContract.deploy();
 }
 
 export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
