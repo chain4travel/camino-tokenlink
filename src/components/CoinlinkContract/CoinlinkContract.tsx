@@ -72,7 +72,8 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     Balance: {balance} CAM
                 </Typography>
                 <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
-                    {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
+                    {accounts.map((account, index) => <AccountContract key={index} accountContract={account}
+                                                                       web3Modal={props.web3Modal}/>)}
                 </div>
             </CardContent>
             <CardActions>
