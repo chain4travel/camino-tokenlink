@@ -1,8 +1,20 @@
 import React, {FC, useEffect, useState} from 'react';
 import './CoinlinkContract.css';
 import {ethers, providers} from "ethers";
-import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
-import {deployAccount, getDeployedAccounts} from "../../services/web3Service";
+import {
+    Button,
+    Card,
+    CardActions,
+    CardContent,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography
+} from "@mui/material";
+import {deployAccount, getDeployedAccounts, saveCoinlinkVariable} from "../../services/web3Service";
 import Web3Modal from "web3modal";
 import AccountContract from "../AccountContract/AccountContract";
 
@@ -17,20 +29,26 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const [balance, setBalance] = useState('');
     const [owner, setOwner] = useState('');
     const [accounts, setAccounts] = useState([]);
+    const [key, setKey] = useState('');
+    const [value, setValue] = useState('');
 
     useEffect(() => {
         const fetchData = async () => {
-            const varInitialAmount = await props.coinlinkContract.vars(0);
-            setInitialAmount(ethers.utils.formatEther(varInitialAmount));
-            const varReviewReward = await props.coinlinkContract.vars(1);
-            setReviewReward(ethers.utils.formatEther(varReviewReward));
-            const varOwner = await props.coinlinkContract.owner();
-            setOwner(varOwner);
+            await fetchValues();
             await fetchAccounts();
             await fetchBalance();
         }
         fetchData().catch(console.error);
     }, []);
+
+    const fetchValues = async () => {
+        const varInitialAmount = await props.coinlinkContract.vars(0);
+        setInitialAmount(ethers.utils.formatEther(varInitialAmount));
+        const varReviewReward = await props.coinlinkContract.vars(1);
+        setReviewReward(ethers.utils.formatEther(varReviewReward));
+        const varOwner = await props.coinlinkContract.owner();
+        setOwner(varOwner);
+    }
 
     const fetchBalance = async () => {
         const provider = new providers.Web3Provider(await props.web3Modal.connect());
@@ -52,6 +70,31 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
         setAccounts(accounts);
     }
 
+    const handleValueVariableChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+        setValue(event.target.value);
+    };
+
+    const handleKeyVariableChange = (event: SelectChangeEvent) => {
+        setKey(event.target.value as string);
+    };
+
+    const onSaveVariable = async () => {
+        if (!key || !value) return;
+        try {
+            let result;
+            console.log(key);
+            if (key === '0' || key === '1') {
+                result = await saveCoinlinkVariable(props.coinlinkContract, key, ethers.utils.parseEther(value));
+            } else {
+                result = await saveCoinlinkVariable(props.coinlinkContract, key, value);
+            }
+            console.log('result', result);
+            await fetchValues();
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
     return (
         <Card>
             <CardContent>
@@ -71,6 +114,20 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     <br/>
                     Balance: {balance} CAM
                 </Typography>
+                <FormControl>
+                    <InputLabel>Variable</InputLabel>
+                    <Select
+                        value={key}
+                        label="Variable"
+                        onChange={handleKeyVariableChange}
+                    >
+                        <MenuItem value={'0'}>Initial amount</MenuItem>
+                        <MenuItem value={'1'}>Review reward</MenuItem>
+                    </Select>
+                    <TextField label="Value" value={value} type="number"
+                               onChange={handleValueVariableChange}/>
+                    <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+                </FormControl>
                 <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                     {accounts.map((account, index) => <AccountContract key={index} accountContract={account}
                                                                        web3Modal={props.web3Modal}/>)}

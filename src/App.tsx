@@ -122,11 +122,11 @@ function App() {
         }
     }
 
-    const handleInitialAmountChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
+    const handleValueVariableChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
         setValue(event.target.value);
     };
 
-    const handleChange = (event: SelectChangeEvent) => {
+    const handleKeyVariableChange = (event: SelectChangeEvent) => {
         setKey(event.target.value as string);
     };
 
@@ -137,23 +137,21 @@ function App() {
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
-                <div>
-                    <FormControl>
-                        <InputLabel>Variable</InputLabel>
-                        <Select
-                            value={key}
-                            label="Variable"
-                            onChange={handleChange}
-                        >
-                            <MenuItem value={0}>Initial amount</MenuItem>
-                        </Select>
-                        <TextField label="Value" value={value} type="number"
-                                   onChange={handleInitialAmountChange}/>
-                        <Button variant="contained" onClick={onSaveVariable} disabled={!provider}>Save variable</Button>
-                    </FormControl>
-                    <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider}>Deploy
-                        Coinlink</Button>
-                </div>
+                <FormControl>
+                    <InputLabel>Variable</InputLabel>
+                    <Select
+                        value={key}
+                        label="Variable"
+                        onChange={handleKeyVariableChange}
+                    >
+                        <MenuItem value={'0'}>Initial amount</MenuItem>
+                    </Select>
+                    <TextField label="Value" value={value} type="number"
+                               onChange={handleValueVariableChange}/>
+                    <Button variant="contained" onClick={onSaveVariable} disabled={!provider || !key}>Save variable</Button>
+                </FormControl>
+                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider}>Deploy
+                    Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
                     {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink}
