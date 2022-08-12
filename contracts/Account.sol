@@ -19,16 +19,16 @@ contract Account {
         _;
     }
 
+    function _restricted() internal view {
+        require(owner == msg.sender, "Not owner");
+    }
+
     receive() external payable {
         emit Received(msg.sender, msg.value);
     }
 
     function changeOwner(address newOwner) public restricted {
         owner = newOwner;
-    }
-
-    function _restricted() internal view {
-        require(owner == msg.sender, "Not owner");
     }
 
     //    function withdraw() restricted public {

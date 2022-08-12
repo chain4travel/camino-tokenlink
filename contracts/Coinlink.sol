@@ -37,6 +37,12 @@ contract Coinlink {
         emit Deploy(address(_contract));
     }
 
+    function setVar(uint _key, uint _value) public {
+        vars[_key] = _value;
+    }
+
+    // VIEWS
+
     function getAddress(bytes memory bytecode, uint _salt) public view returns (address) {
         bytes32 hash = keccak256(abi.encodePacked(bytes1(0xff), address(this), _salt, keccak256(bytecode)));
         return address(uint160(uint(hash)));
