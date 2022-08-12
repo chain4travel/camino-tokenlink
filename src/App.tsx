@@ -1,11 +1,16 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Button, TextField} from "@mui/material";
+import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
 import {ethers} from "ethers";
-import {deployCoinlink, getCoinlinkFactoryInitialAmount, getDeployedCoinlinks} from "./services/web3Service";
+import {
+    deployCoinlink,
+    getCoinlinkFactoryInitialAmount,
+    getDeployedCoinlinks,
+    saveCoinlinkFactoryVariable
+} from "./services/web3Service";
 import CoinlinkContract from "./components/CoinlinkContract/CoinlinkContract";
 
 export const providerOptions = {
@@ -30,7 +35,8 @@ function App() {
     const [account, setAccount] = useState('');
     const [, setNetwork] = useState({});
     const [coinlinks, setCoinlinks] = useState([]);
-    const [initialAmount, setInitialAmount] = useState('');
+    const [key, setKey] = useState('0');
+    const [value, setValue] = useState('');
 
     const web3Modal = new Web3Modal({
         cacheProvider: true,
@@ -80,11 +86,26 @@ function App() {
     }
 
     const onDeployCoinlink = async () => {
-        if (!provider || !initialAmount) return;
+        if (!provider) return;
         try {
-            const result = await deployCoinlink(initialAmount, provider);
+            const result = await deployCoinlink(provider);
             console.log('result', result);
             setCoinlinks(await getDeployedCoinlinks(provider));
+        } catch (error) {
+            console.error(error);
+        }
+    }
+
+    const onSaveVariable = async () => {
+        if (!provider || !key || !value) return;
+        try {
+            let result;
+            if (key === '0') {
+                result = await saveCoinlinkFactoryVariable(key, ethers.utils.parseEther(value), provider);
+            } else {
+                result = await saveCoinlinkFactoryVariable(key, value, provider);
+            }
+            console.log('result', result);
         } catch (error) {
             console.error(error);
         }
@@ -102,7 +123,11 @@ function App() {
     }
 
     const handleInitialAmountChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
-        setInitialAmount(event.target.value);
+        setValue(event.target.value);
+    };
+
+    const handleChange = (event: SelectChangeEvent) => {
+        setKey(event.target.value as string);
     };
 
     return (
@@ -113,9 +138,20 @@ function App() {
                 <div>Wallet Address: {account}</div>
                 <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <div>
-                    <TextField label="Initial amount" value={initialAmount} type="number"
-                               onChange={handleInitialAmountChange}/>
-                    <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || !initialAmount}>Deploy
+                    <FormControl>
+                        <InputLabel>Variable</InputLabel>
+                        <Select
+                            value={key}
+                            label="Variable"
+                            onChange={handleChange}
+                        >
+                            <MenuItem value={0}>Initial amount</MenuItem>
+                        </Select>
+                        <TextField label="Value" value={value} type="number"
+                                   onChange={handleInitialAmountChange}/>
+                        <Button variant="contained" onClick={onSaveVariable} disabled={!provider}>Save variable</Button>
+                    </FormControl>
+                    <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider}>Deploy
                         Coinlink</Button>
                 </div>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>

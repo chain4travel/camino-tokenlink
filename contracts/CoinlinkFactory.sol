@@ -26,9 +26,9 @@ contract CoinlinkFactory is Initializable {
         emit Received(msg.sender, msg.value);
     }
 
-    function deploy(uint _initialAmount) public {
+    function deploy() public {
         coinlinkIds.increment();
-        Coinlink _contract = new Coinlink{salt : bytes32(coinlinkIds.current())}(msg.sender, _initialAmount);
+        Coinlink _contract = new Coinlink{salt : bytes32(coinlinkIds.current())}(msg.sender, vars[VAR_INITIAL_AMOUNT]);
         payable(_contract).transfer(vars[VAR_INITIAL_AMOUNT]);
         coinlinks.push(_contract);
         emit Deploy(address(_contract));
