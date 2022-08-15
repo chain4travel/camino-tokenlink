@@ -1,11 +1,9 @@
 // SPDX-License-Identifier: UNLICENSED
 pragma solidity ^0.8.10;
 
-import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
-import "@openzeppelin/contracts-upgradeable/access/AccessControlUpgradeable.sol";
-import "@openzeppelin/contracts/utils/Create2.sol";
+import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract Account {
+contract Account is IERC721Receiver  {
     address public owner;
 
     event Received(address, uint);
@@ -25,6 +23,10 @@ contract Account {
 
     receive() external payable {
         emit Received(msg.sender, msg.value);
+    }
+
+    function onERC721Received(address, address, uint256, bytes calldata) pure external override returns (bytes4) {
+        return IERC721ReceiverUpgradeable.onERC721Received.selector;
     }
 
     function changeOwner(address newOwner) public restricted {
