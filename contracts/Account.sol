@@ -26,7 +26,7 @@ contract Account is IERC721Receiver  {
     }
 
     function onERC721Received(address, address, uint256, bytes calldata) pure external override returns (bytes4) {
-        return IERC721ReceiverUpgradeable.onERC721Received.selector;
+        return IERC721Receiver.onERC721Received.selector;
     }
 
     function changeOwner(address newOwner) public restricted {
