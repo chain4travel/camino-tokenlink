@@ -9,21 +9,23 @@ export type Networks = Partial<Record<string, { address: string }>>;
 export const deployCoinlink = async (provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
     const signer = new providers.Web3Provider(provider).getSigner();
     const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
-    return contract.deploy();
+    const tx = await contract.deploy();
+    return tx.wait();
 }
 
 export const saveCoinlinkFactoryVariable = async (key: string, value: string | BigNumber, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
     const signer = new providers.Web3Provider(provider).getSigner();
     const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
-    return contract.setVar(key, value);
+    const tx = await contract.setVar(key, value);
+    return tx.wait();
 }
 
 export const saveCoinlinkVariable = async (contract: ethers.Contract, key: string, value: string | BigNumber) => {
-    return contract.setVar(key, value);
+    const tx = await contract.setVar(key, value);
+    return tx.wait();
 }
 
-
-export const getCoinlinkFactoryInitialAmount = async (provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
+export const getCoinlinkFactoryInitialAmount = (provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
     const signer = new providers.Web3Provider(provider).getSigner();
     const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
     return contract.vars(0);
@@ -38,7 +40,8 @@ export const getDeployedCoinlinks = async (provider: ethers.providers.ExternalPr
 }
 
 export const deployAccount = async (coinlinkContract: ethers.Contract) => {
-    return coinlinkContract.deploy();
+    const tx = await coinlinkContract.deploy();
+    return tx.wait();
 }
 
 export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
