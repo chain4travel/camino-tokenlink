@@ -3,10 +3,12 @@ pragma solidity ^0.8.10;
 
 import "@openzeppelin/contracts/token/ERC721/IERC721Receiver.sol";
 
-contract Account is IERC721Receiver  {
+contract Account is IERC721Receiver {
     address public owner;
+    mapping(address => uint[]) private nfts;
 
-    event Received(address, uint);
+    event CurrencyReceived(address, uint);
+    event NftReceived(address, address, uint);
 
     constructor(address _owner) {
         owner = _owner;
@@ -22,15 +24,21 @@ contract Account is IERC721Receiver  {
     }
 
     receive() external payable {
-        emit Received(msg.sender, msg.value);
+        emit CurrencyReceived(msg.sender, msg.value);
     }
 
-    function onERC721Received(address, address, uint256, bytes calldata) pure external override returns (bytes4) {
+    function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external override returns (bytes4) {
+        emit NftReceived(from, operator, tokenId);
         return IERC721Receiver.onERC721Received.selector;
     }
 
     function changeOwner(address newOwner) public restricted {
         owner = newOwner;
+    }
+
+    // VIEWS
+    function getNfts(address nft) public view returns (uint256[] memory nftIds) {
+        return nfts[nft];
     }
 
     //    function withdraw() restricted public {
