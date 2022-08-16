@@ -8,7 +8,7 @@ contract Account is IERC721Receiver {
     mapping(address => uint[]) private nfts;
 
     event CurrencyReceived(address, uint);
-    event NftReceived(address, address, uint);
+    event NftReceived(address, address, address, uint);
 
     constructor(address _owner) {
         owner = _owner;
@@ -28,7 +28,8 @@ contract Account is IERC721Receiver {
     }
 
     function onERC721Received(address operator, address from, uint256 tokenId, bytes calldata data) external override returns (bytes4) {
-        emit NftReceived(from, operator, tokenId);
+        nfts[msg.sender].push(tokenId);
+        emit NftReceived(operator, from, msg.sender, tokenId);
         return IERC721Receiver.onERC721Received.selector;
     }
 
