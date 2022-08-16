@@ -134,7 +134,8 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                 </div>
             </CardContent>
             <CardActions>
-                <Button size="small" onClick={onDeployAccount}>Deploy Account</Button>
+                <Button size="small" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
+                    Account</Button>
                 <Button size="small" onClick={fetchAccounts}>Fetch Accounts</Button>
             </CardActions>
         </Card>

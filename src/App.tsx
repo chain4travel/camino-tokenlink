@@ -1,12 +1,22 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
-import {Button, FormControl, InputLabel, MenuItem, Select, SelectChangeEvent, TextField} from "@mui/material";
+import {
+    Button,
+    FormControl,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography
+} from "@mui/material";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
 import {ethers} from "ethers";
 import {
     deployCoinlink,
+    getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
     getDeployedCoinlinks,
     saveCoinlinkFactoryVariable
@@ -37,6 +47,8 @@ function App() {
     const [coinlinks, setCoinlinks] = useState([]);
     const [key, setKey] = useState('0');
     const [value, setValue] = useState('');
+    const [initialAmount, setInitialAmount] = useState('');
+    const [balance, setBalance] = useState('');
 
     const web3Modal = new Web3Modal({
         cacheProvider: true,
@@ -54,6 +66,11 @@ function App() {
             if (accounts) setAccount(accounts[0]);
             setNetwork(network);
             setCoinlinks(await getDeployedCoinlinks(provider));
+            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
+            setInitialAmount(ethers.utils.formatEther(initialAmount));
+            const balance = await getCoinlinkFactoryBalance(provider);
+            setBalance(ethers.utils.formatEther(balance));
+            console.log(ethers.utils.formatEther(balance))
         }
         fetchData().catch(console.error);
     }, []);
@@ -75,22 +92,14 @@ function App() {
         }
     };
 
-    const onGetInitialAmount = async () => {
-        if (!provider) return;
-        try {
-            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
-            console.log('initialAmount', ethers.utils.formatEther(initialAmount));
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const onDeployCoinlink = async () => {
         if (!provider) return;
         try {
             const result = await deployCoinlink(provider);
             console.log('result', result);
             setCoinlinks(await getDeployedCoinlinks(provider));
+            const balance = await getCoinlinkFactoryBalance(provider);
+            setBalance(ethers.utils.formatEther(balance));
         } catch (error) {
             console.error(error);
         }
@@ -106,6 +115,8 @@ function App() {
                 result = await saveCoinlinkFactoryVariable(key, value, provider);
             }
             console.log('result', result);
+            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
+            setInitialAmount(ethers.utils.formatEther(initialAmount));
         } catch (error) {
             console.error(error);
         }
@@ -136,7 +147,6 @@ function App() {
                 <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
-                <Button variant="contained" onClick={onGetInitialAmount}>Get initial amount</Button>
                 <FormControl>
                     <InputLabel>Variable</InputLabel>
                     <Select
@@ -148,9 +158,15 @@ function App() {
                     </Select>
                     <TextField label="Value" value={value} type="number"
                                onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!provider || !key}>Save variable</Button>
+                    <Button variant="contained" onClick={onSaveVariable} disabled={!provider || !key}>Save
+                        variable</Button>
                 </FormControl>
-                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider}>Deploy
+                <Typography variant="body2">
+                    Initial amount: {initialAmount} CAM
+                    <br/>
+                    Balance: {balance} CAM
+                </Typography>
+                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || initialAmount > balance}>Deploy
                     Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
