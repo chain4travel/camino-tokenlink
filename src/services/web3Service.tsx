@@ -2,6 +2,7 @@ import {BigNumber, ethers, providers} from "ethers";
 import coinlinkFactory from '@coinlink/contracts/CoinlinkFactory.json';
 import coinlink from '@coinlink/contracts/Coinlink.json';
 import account from '@coinlink/contracts/Account.json';
+import exampleNft from '@coinlink/contracts/ExampleNft.json';
 
 let networkId = '5777';
 export type Networks = Partial<Record<string, { address: string }>>;
@@ -47,6 +48,14 @@ export const getDeployedCoinlinks = async (provider: ethers.providers.ExternalPr
 export const deployAccount = async (coinlinkContract: ethers.Contract) => {
     const tx = await coinlinkContract.deploy();
     return tx.wait();
+}
+
+export const getNfts = async (accountContract: ethers.Contract) => {
+    return accountContract.getNfts((exampleNft.networks as Networks)[networkId]?.address as string);
+}
+
+export const retrieveNfts = async (accountContract: ethers.Contract) => {
+    return accountContract.retrieveNfts((exampleNft.networks as Networks)[networkId]?.address as string);
 }
 
 export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
