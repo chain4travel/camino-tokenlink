@@ -166,7 +166,7 @@ function App() {
                     <br/>
                     Balance: {balance} CAM
                 </Typography>
-                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || initialAmount > balance}>Deploy
+                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || +initialAmount > +balance}>Deploy
                     Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
