@@ -1,9 +1,9 @@
 import React, {FC, useEffect, useState} from 'react';
 import './AccountContract.css';
 import {BigNumber, ethers, providers} from "ethers";
-import {Button, Card, CardActions, CardContent, Typography} from "@mui/material";
+import {Button, Card, CardActions, CardContent, FormControl, TextField, Typography} from "@mui/material";
 import Web3Modal from "web3modal";
-import {getNfts, retrieveNfts} from "../../services/web3Service";
+import {changeAccountOwner, getNfts, retrieveNfts} from "../../services/web3Service";
 
 interface AccountContractProps {
     accountContract: ethers.Contract;
@@ -12,15 +12,16 @@ interface AccountContractProps {
 
 const AccountContract: FC<AccountContractProps> = (props) => {
     const [owner, setOwner] = useState('');
+    const [newOwner, setNewOwner] = useState('');
     const [balance, setBalance] = useState('');
     const [nfts, setNfts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const varOwner = await props.accountContract.owner();
-            setOwner(varOwner);
+            await fetchOwner();
             await fetchBalance();
             await fetchNfts();
+            setNewOwner(owner);
         }
         fetchData().catch(console.error);
     }, []);
@@ -36,10 +37,24 @@ const AccountContract: FC<AccountContractProps> = (props) => {
         setNfts(nfts.map((nft: BigNumber) => nft.toString()));
     }
 
+    const fetchOwner = async () => {
+        const varOwner = await props.accountContract.owner();
+        setOwner(varOwner);
+    }
+
     const onRetrieveNfts = async () => {
         const result = await retrieveNfts(props.accountContract);
         console.log(result);
         await fetchNfts();
+    }
+
+    const onChangeOwner = async () => {
+        await changeAccountOwner(props.accountContract, newOwner);
+        await fetchOwner();
+    }
+
+    const handleOwnerChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewOwner(event.target.value);
     }
 
     return (
@@ -48,6 +63,11 @@ const AccountContract: FC<AccountContractProps> = (props) => {
                 <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>
                     Owner: {owner}
                 </Typography>
+                <FormControl>
+                    <TextField value={newOwner} onChange={handleOwnerChange} fullWidth/>
+                    <Button onClick={onChangeOwner} disabled={!ethers.utils.isAddress(newOwner)} variant={'contained'}>Change
+                        Owner</Button>
+                </FormControl>
                 <Typography variant="h5" component="div">
                     Account
                 </Typography>

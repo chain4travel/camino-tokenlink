@@ -72,6 +72,11 @@ export const retrieveNfts = async (accountContract: ethers.Contract) => {
     return accountContract.retrieveNfts((exampleNft.networks as Networks)[networkId]?.address as string);
 }
 
+export const changeAccountOwner = async (accountContract: ethers.Contract, newOwner: string) => {
+    const tx = await accountContract.changeOwner(newOwner);
+    return tx.wait();
+}
+
 export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
     const signer = new providers.Web3Provider(provider).getSigner();
     return (await coinlinkContract.getDeployedContracts()).map((address: string) => {
