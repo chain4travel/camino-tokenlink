@@ -54,6 +54,20 @@ export const getNfts = async (accountContract: ethers.Contract) => {
     return accountContract.getNfts((exampleNft.networks as Networks)[networkId]?.address as string);
 }
 
+export const getWalletNfts = async (provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc, account: string) => {
+    const nfts = [];
+    const ethersProvider = new providers.Web3Provider(provider);
+    const signer = ethersProvider.getSigner(account);
+    const nftContract = new ethers.Contract((exampleNft.networks as Networks)[networkId]?.address as string, exampleNft.abi, signer);
+    const balance = await nftContract.balanceOf(account);
+    for (let i = 0; i < balance; i++) {
+        const nft = await nftContract.tokenOfOwnerByIndex(account, i);
+        nfts.push(nft);
+        console.log(nft);
+    }
+    return nfts;
+}
+
 export const retrieveNfts = async (accountContract: ethers.Contract) => {
     return accountContract.retrieveNfts((exampleNft.networks as Networks)[networkId]?.address as string);
 }

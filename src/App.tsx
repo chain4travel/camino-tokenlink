@@ -1,7 +1,7 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {
-    Button,
+    Button, Card, CardContent,
     FormControl,
     InputLabel,
     MenuItem,
@@ -13,12 +13,12 @@ import {
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import WalletConnect from "@walletconnect/web3-provider";
 import Web3Modal from 'web3modal';
-import {ethers} from "ethers";
+import {BigNumber, ethers} from "ethers";
 import {
     deployCoinlink,
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
-    getDeployedCoinlinks,
+    getDeployedCoinlinks, getWalletNfts,
     saveCoinlinkFactoryVariable
 } from "./services/web3Service";
 import CoinlinkContract from "./components/CoinlinkContract/CoinlinkContract";
@@ -49,6 +49,7 @@ function App() {
     const [value, setValue] = useState('');
     const [initialAmount, setInitialAmount] = useState('');
     const [balance, setBalance] = useState('');
+    const [nfts, setNfts] = useState<string[]>([]);
 
     const web3Modal = new Web3Modal({
         cacheProvider: true,
@@ -71,6 +72,9 @@ function App() {
             const balance = await getCoinlinkFactoryBalance(provider);
             setBalance(ethers.utils.formatEther(balance));
             console.log(ethers.utils.formatEther(balance))
+            const nfts = await getWalletNfts(provider, accounts[0]);
+            setNfts(nfts.map((nft: BigNumber) => nft.toString()));
+            console.log(nfts);
         }
         fetchData().catch(console.error);
     }, []);
@@ -147,6 +151,17 @@ function App() {
                 <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
                 <div>Connection Status: {!!account ? 'True' : 'False'}</div>
                 <div>Wallet Address: {account}</div>
+                {nfts.length > 0 && <p>Wallet NFTs:</p>}
+                <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
+                    {nfts.map((nft, index) =>
+                        <Card key={index}>
+                            <CardContent>
+                                <Typography variant="body2">
+                                    {nft}
+                                </Typography>
+                            </CardContent>
+                        </Card>)}
+                </div>
                 <FormControl>
                     <InputLabel>Variable</InputLabel>
                     <Select
