@@ -14,7 +14,12 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {deployAccount, getDeployedAccounts, saveCoinlinkVariable} from "../../services/web3Service";
+import {
+    changeCoinlinkOwner,
+    deployAccount,
+    getDeployedAccounts,
+    saveCoinlinkVariable
+} from "../../services/web3Service";
 import Web3Modal from "web3modal";
 import AccountContract from "../AccountContract/AccountContract";
 
@@ -28,6 +33,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const [reviewReward, setReviewReward] = useState('');
     const [balance, setBalance] = useState('');
     const [owner, setOwner] = useState('');
+    const [newOwner, setNewOwner] = useState('');
     const [accounts, setAccounts] = useState([]);
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
@@ -37,6 +43,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
             await fetchValues();
             await fetchAccounts();
             await fetchBalance();
+            await fetchOwner();
         }
         fetchData().catch(console.error);
     }, []);
@@ -46,6 +53,9 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
         setInitialAmount(ethers.utils.formatEther(varInitialAmount));
         const varReviewReward = await props.coinlinkContract.vars(1);
         setReviewReward(ethers.utils.formatEther(varReviewReward));
+    }
+
+    const fetchOwner = async () => {
         const varOwner = await props.coinlinkContract.owner();
         setOwner(varOwner);
     }
@@ -63,6 +73,11 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
         await fetchBalance();
     }
 
+    const onChangeOwner = async () => {
+        await changeCoinlinkOwner(props.coinlinkContract, newOwner);
+        await fetchOwner();
+    }
+
     const fetchAccounts = async () => {
         const provider = await props.web3Modal.connect();
         const accounts = await getDeployedAccounts(props.coinlinkContract, provider);
@@ -77,6 +92,10 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const handleKeyVariableChange = (event: SelectChangeEvent) => {
         setKey(event.target.value as string);
     };
+
+    const handleOwnerChange = async (event: React.ChangeEvent<HTMLInputElement>) => {
+        setNewOwner(event.target.value);
+    }
 
     const onSaveVariable = async () => {
         if (!key || !value) return;
@@ -101,6 +120,11 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                 <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>
                     Owner: {owner}
                 </Typography>
+                <FormControl>
+                    <TextField value={newOwner} onChange={handleOwnerChange} fullWidth/>
+                    <Button onClick={onChangeOwner} disabled={!ethers.utils.isAddress(newOwner)} variant={'contained'}>Change
+                        Owner</Button>
+                </FormControl>
                 <Typography variant="h5" component="div">
                     Coinlink
                 </Typography>

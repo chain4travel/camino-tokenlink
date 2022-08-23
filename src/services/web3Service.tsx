@@ -77,6 +77,11 @@ export const changeAccountOwner = async (accountContract: ethers.Contract, newOw
     return tx.wait();
 }
 
+export const changeCoinlinkOwner = async (coinlinkContract: ethers.Contract, newOwner: string) => {
+    const tx = await coinlinkContract.changeOwner(newOwner);
+    return tx.wait();
+}
+
 export const getDeployedAccounts = async (coinlinkContract: ethers.Contract, provider: ethers.providers.ExternalProvider | ethers.providers.JsonRpcFetchFunc) => {
     const signer = new providers.Web3Provider(provider).getSigner();
     return (await coinlinkContract.getDeployedContracts()).map((address: string) => {

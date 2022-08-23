@@ -8,7 +8,6 @@ import "./Account.sol";
 
 contract Coinlink {
     using Counters for Counters.Counter;
-    event Received(address, uint);
 
     Counters.Counter private accountIds;
     Account[] public accounts;
@@ -18,17 +17,27 @@ contract Coinlink {
     uint8 public constant VAR_REVIEW_REWARD = 1;
 
     event Deploy(address addr);
+    event CurrencyReceived(address, uint);
 
     constructor(address _owner, uint _initialAmount) {
         owner = _owner;
         vars[VAR_INITIAL_AMOUNT] = _initialAmount;
     }
 
-    receive() external payable {
-        emit Received(msg.sender, msg.value);
+    modifier restricted() {
+        _restricted();
+        _;
     }
 
-    function deploy() public {
+    function _restricted() internal view {
+        require(owner == msg.sender, "Not owner");
+    }
+
+    receive() external payable {
+        emit CurrencyReceived(msg.sender, msg.value);
+    }
+
+    function deploy() public restricted {
         accountIds.increment();
         Account _contract = new Account{salt : bytes32(accountIds.current())}(msg.sender);
         payable(_contract).transfer(vars[VAR_INITIAL_AMOUNT]);
@@ -36,8 +45,12 @@ contract Coinlink {
         emit Deploy(address(_contract));
     }
 
-    function setVar(uint _key, uint _value) public {
+    function setVar(uint _key, uint _value) public restricted {
         vars[_key] = _value;
+    }
+
+    function changeOwner(address newOwner) public restricted {
+        owner = newOwner;
     }
 
     // VIEWS

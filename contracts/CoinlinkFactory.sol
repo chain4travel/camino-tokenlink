@@ -9,24 +9,35 @@ import "./Coinlink.sol";
 
 contract CoinlinkFactory is Initializable {
     using Counters for Counters.Counter;
-    event Received(address, uint);
 
+    address public owner;
     Counters.Counter private coinlinkIds;
     Coinlink[] public coinlinks;
     mapping(uint256 => uint256) public vars;
     uint8 public constant VAR_INITIAL_AMOUNT = 0;
 
     event Deploy(address addr);
+    event CurrencyReceived(address, uint);
 
     function initialize() public initializer {
+        owner = msg.sender;
         vars[VAR_INITIAL_AMOUNT] = 5 ether;
     }
 
-    receive() external payable {
-        emit Received(msg.sender, msg.value);
+    modifier restricted() {
+        _restricted();
+        _;
     }
 
-    function deploy() public {
+    function _restricted() internal view {
+        require(owner == msg.sender, "Not owner");
+    }
+
+    receive() external payable {
+        emit CurrencyReceived(msg.sender, msg.value);
+    }
+
+    function deploy() public restricted {
         coinlinkIds.increment();
         Coinlink _contract = new Coinlink{salt : bytes32(coinlinkIds.current())}(msg.sender, vars[VAR_INITIAL_AMOUNT]);
         payable(_contract).transfer(vars[VAR_INITIAL_AMOUNT]);
@@ -34,7 +45,7 @@ contract CoinlinkFactory is Initializable {
         emit Deploy(address(_contract));
     }
 
-    function setVar(uint _key, uint _value) public {
+    function setVar(uint _key, uint _value) public restricted {
         vars[_key] = _value;
     }
 
