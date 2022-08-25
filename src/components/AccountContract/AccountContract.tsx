@@ -1,16 +1,16 @@
 import React, {FC, useEffect, useState} from 'react';
 import './AccountContract.css';
-import {BigNumber, ethers, providers} from "ethers";
+import {BigNumber, ethers} from "ethers";
 import {Button, Card, CardActions, CardContent, FormControl, TextField, Typography} from "@mui/material";
-import Web3Modal from "web3modal";
 import {changeAccountOwner, getNfts, retrieveNfts} from "../../services/web3Service";
+import {useWeb3} from "../../Web3ModalContext";
 
 interface AccountContractProps {
     accountContract: ethers.Contract;
-    web3Modal: Web3Modal;
 }
 
 const AccountContract: FC<AccountContractProps> = (props) => {
+    const web3 = useWeb3();
     const [owner, setOwner] = useState('');
     const [newOwner, setNewOwner] = useState('');
     const [balance, setBalance] = useState('');
@@ -27,8 +27,8 @@ const AccountContract: FC<AccountContractProps> = (props) => {
     }, []);
 
     const fetchBalance = async () => {
-        const provider = new providers.Web3Provider(await props.web3Modal.connect());
-        const balance = await provider.getBalance(props.accountContract.address);
+        if (!web3.provider) return;
+        const balance = await web3.provider.getBalance(props.accountContract.address);
         setBalance(ethers.utils.formatEther(balance));
     }
 

@@ -4,6 +4,8 @@ import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
 import {createTheme, ThemeProvider} from "@mui/material";
+import {BrowserRouter} from "react-router-dom";
+import {Web3Provider} from "./Web3ModalContext";
 
 const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
@@ -18,9 +20,13 @@ const theme = createTheme({
 });
 root.render(
     <React.StrictMode>
-        <ThemeProvider theme={theme}>
-            <App/>
-        </ThemeProvider>
+        <BrowserRouter>
+            <ThemeProvider theme={theme}>
+                <Web3Provider>
+                    <App />
+                </Web3Provider>
+            </ThemeProvider>
+        </BrowserRouter>
     </React.StrictMode>
 );
 

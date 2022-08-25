@@ -1,6 +1,13 @@
-import React, {FC, useEffect, useState} from 'react';
-import './CoinlinkContract.css';
-import {ethers, providers} from "ethers";
+import React, {useEffect, useState} from 'react';
+import './Coinlink.css';
+import {useParams} from "react-router-dom";
+import {ethers} from "ethers";
+import {
+    changeCoinlinkOwner,
+    deployAccount,
+    getDeployedAccounts,
+    saveCoinlinkVariable
+} from "../../services/web3Service";
 import {
     Button,
     Card,
@@ -14,21 +21,13 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import {
-    changeCoinlinkOwner,
-    deployAccount,
-    getDeployedAccounts,
-    saveCoinlinkVariable
-} from "../../services/web3Service";
-import Web3Modal from "web3modal";
+import coinlink from '@coinlink/contracts/Coinlink.json';
+import {useWeb3} from "../../Web3ModalContext";
 import AccountContract from "../AccountContract/AccountContract";
 
-interface CoinlinkContractProps {
-    coinlinkContract: ethers.Contract;
-    web3Modal: Web3Modal;
-}
-
-const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
+const Coinlink = () => {
+    const web3 = useWeb3();
+    const params = useParams();
     const [initialAmount, setInitialAmount] = useState('');
     const [reviewReward, setReviewReward] = useState('');
     const [balance, setBalance] = useState('');
@@ -37,9 +36,13 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     const [accounts, setAccounts] = useState([]);
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
+    const [coinlinkContract, setCoinlinkContract] = useState<ethers.Contract>(new ethers.Contract(params.address as string, coinlink.abi, web3.provider));
 
     useEffect(() => {
         const fetchData = async () => {
+            await web3.connect();
+            console.log(web3)
+            setCoinlinkContract(new ethers.Contract(params.address as string, coinlink.abi, web3.signer));
             await fetchValues();
             await fetchAccounts();
             await fetchBalance();
@@ -48,39 +51,40 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
         fetchData().catch(console.error);
     }, []);
 
+
     const fetchValues = async () => {
-        const varInitialAmount = await props.coinlinkContract.vars(0);
+        const varInitialAmount = await coinlinkContract.vars(0);
         setInitialAmount(ethers.utils.formatEther(varInitialAmount));
-        const varReviewReward = await props.coinlinkContract.vars(1);
+        const varReviewReward = await coinlinkContract.vars(1);
         setReviewReward(ethers.utils.formatEther(varReviewReward));
     }
 
     const fetchOwner = async () => {
-        const varOwner = await props.coinlinkContract.owner();
+        const varOwner = await coinlinkContract.owner();
         setOwner(varOwner);
     }
 
     const fetchBalance = async () => {
-        const provider = new providers.Web3Provider(await props.web3Modal.connect());
-        const balance = await provider.getBalance(props.coinlinkContract.address);
+        if (!web3.provider) return;
+        const balance = await web3.provider.getBalance(coinlinkContract.address);
         setBalance(ethers.utils.formatEther(balance));
     }
 
     const onDeployAccount = async () => {
-        const result = await deployAccount(props.coinlinkContract);
+        const result = await deployAccount(coinlinkContract);
         console.log(result);
         await fetchAccounts();
         await fetchBalance();
     }
 
     const onChangeOwner = async () => {
-        await changeCoinlinkOwner(props.coinlinkContract, newOwner);
+        await changeCoinlinkOwner(coinlinkContract, newOwner);
         await fetchOwner();
     }
 
     const fetchAccounts = async () => {
-        const provider = await props.web3Modal.connect();
-        const accounts = await getDeployedAccounts(props.coinlinkContract, provider);
+        if (!web3.signer) return;
+        const accounts = await getDeployedAccounts(coinlinkContract, web3.signer);
         console.log(accounts);
         setAccounts(accounts);
     }
@@ -101,11 +105,10 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
         if (!key || !value) return;
         try {
             let result;
-            console.log(key);
             if (key === '0' || key === '1') {
-                result = await saveCoinlinkVariable(props.coinlinkContract, key, ethers.utils.parseEther(value));
+                result = await saveCoinlinkVariable(coinlinkContract, key, ethers.utils.parseEther(value));
             } else {
-                result = await saveCoinlinkVariable(props.coinlinkContract, key, value);
+                result = await saveCoinlinkVariable(coinlinkContract, key, value);
             }
             console.log('result', result);
             await fetchValues();
@@ -129,7 +132,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     Coinlink
                 </Typography>
                 <Typography sx={{mb: 1.5}} color="text.secondary">
-                    {props.coinlinkContract.address}
+                    {coinlinkContract.address}
                 </Typography>
                 <Typography variant="body2">
                     Initial amount: {initialAmount} CAM
@@ -165,4 +168,4 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
     )
 };
 
-export default CoinlinkContract;
+export default Coinlink;

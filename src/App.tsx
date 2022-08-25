@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import './App.css';
 import {
-    Button, Card, CardContent,
+    Button,
+    Card,
+    CardContent,
     FormControl,
     InputLabel,
     MenuItem,
@@ -10,99 +12,66 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
-import WalletConnect from "@walletconnect/web3-provider";
-import Web3Modal from 'web3modal';
 import {BigNumber, ethers} from "ethers";
 import {
     deployCoinlink,
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
-    getDeployedCoinlinks, getWalletNfts,
+    getDeployedCoinlinks,
+    getWalletNfts,
     saveCoinlinkFactoryVariable
 } from "./services/web3Service";
-import CoinlinkContract from "./components/CoinlinkContract/CoinlinkContract";
+import {Link, Route, Routes} from "react-router-dom";
+import Coinlinks from "./components/Coinlinks/Coinlinks";
+import Coinlink from "./components/Coinlink/Coinlink";
+import {useWeb3} from "./Web3ModalContext";
 
-export const providerOptions = {
-    coinbasewallet: {
-        package: CoinbaseWalletSDK,
-        options: {
-            appName: "Web 3 Modal Demo",
-            infuraId: process.env.REACT_APP_INFURA_KEY
-        }
-    },
-    walletconnect: {
-        package: WalletConnect,
-        options: {
-            infuraId: process.env.REACT_APP_INFURA_KEY
-        }
-    }
-};
-
-function App() {
-    const [provider, setProvider] = useState();
-    const [, setLibrary] = useState({});
-    const [account, setAccount] = useState('');
-    const [, setNetwork] = useState({});
-    const [coinlinks, setCoinlinks] = useState([]);
+const App = () => {
+    const web3 = useWeb3();
     const [key, setKey] = useState('0');
     const [value, setValue] = useState('');
     const [initialAmount, setInitialAmount] = useState('');
     const [balance, setBalance] = useState('');
     const [nfts, setNfts] = useState<string[]>([]);
-
-    const web3Modal = new Web3Modal({
-        cacheProvider: true,
-        providerOptions
-    });
+    const [coinlinks, setCoinlinks] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
-            const provider = await web3Modal.connect();
-            const library = new ethers.providers.Web3Provider(provider);
-            const accounts = await library.listAccounts();
-            const network = await library.getNetwork();
-            setProvider(provider);
-            setLibrary(library);
-            if (accounts) setAccount(accounts[0]);
-            setNetwork(network);
-            setCoinlinks(await getDeployedCoinlinks(provider));
-            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
-            setInitialAmount(ethers.utils.formatEther(initialAmount));
-            const balance = await getCoinlinkFactoryBalance(provider);
-            setBalance(ethers.utils.formatEther(balance));
-            console.log(ethers.utils.formatEther(balance))
-            const nfts = await getWalletNfts(provider, accounts[0]);
-            setNfts(nfts.map((nft: BigNumber) => nft.toString()));
-            console.log(nfts);
+            await web3.connect();
         }
         fetchData().catch(console.error);
     }, []);
 
+    useEffect(() => {
+        const fetchData = async () => {
+            await connectWallet();
+        }
+        fetchData().catch(console.error);
+    }, [web3]);
+
     const connectWallet = async () => {
+        if (!web3.signer || !web3.provider || !web3.account) return;
         try {
-            const provider = await web3Modal.connect();
-            const library = new ethers.providers.Web3Provider(provider);
-            const accounts = await library.listAccounts();
-            const network = await library.getNetwork();
-            setProvider(provider);
-            setLibrary(library);
-            if (accounts) setAccount(accounts[0]);
-            setNetwork(network);
-            console.log(provider);
-            console.log(library);
+            const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
+            setInitialAmount(ethers.utils.formatEther(initialAmount));
+            const balance = await getCoinlinkFactoryBalance(web3.provider);
+            setBalance(ethers.utils.formatEther(balance));
+            const nfts = await getWalletNfts(web3.signer, web3.account);
+            setNfts(nfts.map((nft: BigNumber) => nft.toString()));
+            const coinlinks = await getDeployedCoinlinks(web3.signer);
+            setCoinlinks(coinlinks);
         } catch (error) {
             console.error(error);
         }
     };
 
     const onDeployCoinlink = async () => {
-        if (!provider) return;
+        if (!web3.signer || !web3.provider) return;
         try {
-            const result = await deployCoinlink(provider);
+            const result = await deployCoinlink(web3.signer);
             console.log('result', result);
-            setCoinlinks(await getDeployedCoinlinks(provider));
-            const balance = await getCoinlinkFactoryBalance(provider);
+            setCoinlinks(await getDeployedCoinlinks(web3.signer));
+            const balance = await getCoinlinkFactoryBalance(web3.provider);
             setBalance(ethers.utils.formatEther(balance));
         } catch (error) {
             console.error(error);
@@ -110,16 +79,16 @@ function App() {
     }
 
     const onSaveVariable = async () => {
-        if (!provider || !key || !value) return;
+        if (!web3.signer || !key || !value) return;
         try {
             let result;
             if (key === '0') {
-                result = await saveCoinlinkFactoryVariable(key, ethers.utils.parseEther(value), provider);
+                result = await saveCoinlinkFactoryVariable(key, ethers.utils.parseEther(value), web3.signer);
             } else {
-                result = await saveCoinlinkFactoryVariable(key, value, provider);
+                result = await saveCoinlinkFactoryVariable(key, value, web3.signer);
             }
             console.log('result', result);
-            const initialAmount = await getCoinlinkFactoryInitialAmount(provider);
+            const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
             setInitialAmount(ethers.utils.formatEther(initialAmount));
         } catch (error) {
             console.error(error);
@@ -127,9 +96,9 @@ function App() {
     }
 
     const onGetDeployedCoinlinks = async () => {
-        if (!provider) return;
+        if (!web3.signer) return;
         try {
-            const result = await getDeployedCoinlinks(provider);
+            const result = await getDeployedCoinlinks(web3.signer);
             console.log('result', result);
             setCoinlinks(result);
         } catch (error) {
@@ -148,9 +117,10 @@ function App() {
     return (
         <div className="App">
             <header className="App-header gap-2">
-                <Button variant="contained" onClick={connectWallet}>Connect Wallet</Button>
-                <div>Connection Status: {!!account ? 'True' : 'False'}</div>
-                <div>Wallet Address: {account}</div>
+                <Link to="coinlinks">Coinlinks</Link>
+                <Button variant="contained" onClick={web3.connect}>Connect Wallet</Button>
+                <div>Connection Status: {!!web3.account ? 'True' : 'False'}</div>
+                <div>Wallet Address: {web3.account}</div>
                 {nfts.length > 0 && <p>Wallet NFTs:</p>}
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
                     {nfts.map((nft, index) =>
@@ -173,7 +143,7 @@ function App() {
                     </Select>
                     <TextField label="Value" value={value} type="number"
                                onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!provider || !key}>Save
+                    <Button variant="contained" onClick={onSaveVariable} disabled={!web3.signer || !key}>Save
                         variable</Button>
                 </FormControl>
                 <Typography variant="body2">
@@ -181,14 +151,16 @@ function App() {
                     <br/>
                     Balance: {balance} CAM
                 </Typography>
-                <Button variant="contained" onClick={onDeployCoinlink} disabled={!provider || +initialAmount > +balance}>Deploy
+                <Button variant="contained" onClick={onDeployCoinlink}
+                        disabled={!web3.signer || +initialAmount > +balance}>Deploy
                     Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
-                <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
-                    {coinlinks.map((coinlink, index) => <CoinlinkContract key={index} coinlinkContract={coinlink}
-                                                                          web3Modal={web3Modal}/>)}
-                </div>
+                <Coinlinks coinlinks={coinlinks}/>
             </header>
+            {web3.signer && <Routes>
+                <Route path="coinlinks" element={<Coinlinks coinlinks={coinlinks}/>}/>
+                <Route path="coinlinks/:address" element={<Coinlink/>}/>
+            </Routes>}
         </div>
     );
 }
