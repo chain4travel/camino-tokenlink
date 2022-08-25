@@ -49,7 +49,7 @@ const Coinlink = () => {
             await fetchOwner();
         }
         fetchData().catch(console.error);
-    }, []);
+    }, [params.address]);
 
 
     const fetchValues = async () => {
