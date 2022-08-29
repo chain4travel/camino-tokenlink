@@ -15,3 +15,15 @@
 .App-link {
   color: #61dafb;
 }
+
+.toolbar {
+  background-color: #1E293B;
+}
+
+.divider {
+  background: #484D4B;
+}
+
+.camino-title {
+  color: #149EED;
+}
