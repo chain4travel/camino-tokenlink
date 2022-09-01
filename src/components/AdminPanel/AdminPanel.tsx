@@ -130,12 +130,17 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         )
     } else {
         return (
-            <>
-                <Typography variant="h4">Status</Typography>
-                <Button variant="contained" onClick={web3.connect}>Connect Wallet</Button>
-                <div>Connection Status: {!!web3.account ? 'True' : 'False'}</div>
-                <div>Wallet Address: {web3.account}</div>
-                {nfts.length > 0 && <p>Wallet NFTs:</p>}
+            <div className="flex flex-col items-start justify-center text-white gap-3 mx-5">
+                <Typography variant="h5">Status</Typography>
+                <div className={'flex flex-col items-start'}>
+                    <Typography variant="body1" className='green-text uppercase'>Connection Status</Typography>
+                    <Typography variant="body1">{!!web3.account ? 'True' : 'False'}</Typography>
+                </div>
+                <div className={'flex flex-col items-start'}>
+                    <Typography variant="body1" className='green-text uppercase'>Wallet Address</Typography>
+                    <Typography variant="body1">{web3.account}</Typography>
+                </div>
+                {nfts.length > 0 && <Typography variant="body1" className='green-text uppercase'>Wallet NFTs</Typography>}
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
                     {nfts.map((nft, index) =>
                         <Card key={index}>
@@ -169,7 +174,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                         disabled={!web3.signer || +initialAmount > +balance}>Deploy
                     Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
-            </>
+            </div>
         )
     }
 };

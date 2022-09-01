@@ -48,12 +48,10 @@ const App = () => {
                         </Link>
                     )}
                 </div>
-                <div className="flex flex-col items-center justify-center text-white">
                     <Routes>
                         <Route path="/" element={<AdminPanel coinlinks={coinlinks} setCoinlinks={setCoinlinks}/>}/>
                         <Route path="coinlinks/:address" element={<Coinlink/>}/>
                     </Routes>
-                </div>
             </Box>
         </div>
     );
