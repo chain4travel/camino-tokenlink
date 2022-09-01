@@ -28,7 +28,7 @@ root.render(
         <BrowserRouter>
             <ThemeProvider theme={theme}>
                 <Web3Provider>
-                    <App />
+                    <App/>
                 </Web3Provider>
             </ThemeProvider>
         </BrowserRouter>

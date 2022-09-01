@@ -1,12 +1,17 @@
-import React from 'react';
+import React, {useState} from 'react';
 import './App.css';
-import {AppBar, Box, Divider, Toolbar, Typography} from "@mui/material";
-import {Route, Routes} from "react-router-dom";
+import {AppBar, Box, Divider, Fab, Toolbar, Typography} from "@mui/material";
+import {Link, Route, Routes} from "react-router-dom";
 import Coinlink from "./components/Coinlink/Coinlink";
 import CaminoLogo from "./assets/camino_logo.png";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
+import {ethers} from "ethers";
+import DomainIcon from "@mui/icons-material/Domain";
+import HomeIcon from "@mui/icons-material/HomeOutlined";
 
 const App = () => {
+    const [coinlinks, setCoinlinks] = useState([]);
+
     return (
         <div className={'App h-screen'}>
             <Box sx={{flexGrow: 1}}>
@@ -26,11 +31,29 @@ const App = () => {
                     </Toolbar>
                 </AppBar>
             </Box>
-            <Box component={"main"}>
-                <Routes>
-                    <Route path="/" element={<AdminPanel/>}/>
-                    <Route path="coinlinks/:address" element={<Coinlink/>}/>
-                </Routes>
+            <Box component={"main"} className={'flex gap-2 content-center'}>
+                <div className="flex flex-col m-4 gap-2">
+                    <Link to={`/`} className="flex items-center gap-2">
+                        <Fab color="primary" aria-label="add">
+                            <HomeIcon/>
+                        </Fab>
+                        <Typography variant="h6">HOME</Typography>
+                    </Link>
+                    {coinlinks.map((coinlink: ethers.Contract, index: number) =>
+                        <Link key={index} to={`/coinlinks/${coinlink.address}`} className="flex items-center gap-2">
+                            <Fab color="primary" aria-label="add">
+                                <DomainIcon/>
+                            </Fab>
+                            <Typography variant="h6">OTA #{index + 1}</Typography>
+                        </Link>
+                    )}
+                </div>
+                <div className="flex flex-col items-center justify-center text-white">
+                    <Routes>
+                        <Route path="/" element={<AdminPanel coinlinks={coinlinks} setCoinlinks={setCoinlinks}/>}/>
+                        <Route path="coinlinks/:address" element={<Coinlink/>}/>
+                    </Routes>
+                </div>
             </Box>
         </div>
     );
