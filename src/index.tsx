@@ -17,6 +17,11 @@ const theme = createTheme({
             paper: '#ffffff', // your color
         },
     },
+    typography: {
+        fontFamily: [
+            'Poppins',
+        ].join(",")
+    }
 });
 root.render(
     <React.StrictMode>
