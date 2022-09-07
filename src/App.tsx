@@ -8,9 +8,28 @@ import AdminPanel from "./components/AdminPanel/AdminPanel";
 import {ethers} from "ethers";
 import DomainIcon from "@mui/icons-material/Domain";
 import HomeIcon from "@mui/icons-material/HomeOutlined";
+import PlusIcon from "@mui/icons-material/Add";
+import {deployCoinlink, getCoinlinkFactoryBalance, getDeployedCoinlinks} from "./services/web3Service";
+import {useWeb3} from "./Web3ModalContext";
 
 const App = () => {
+    const web3 = useWeb3();
     const [coinlinks, setCoinlinks] = useState([]);
+    const [factoryBalance, setFactoryBalance] = useState('');
+    const [initialAmount, setInitialAmount] = useState('');
+
+    const onDeployCoinlink = async () => {
+        if (!web3.signer || !web3.provider) return;
+        try {
+            const result = await deployCoinlink(web3.signer);
+            console.log('result', result);
+            setCoinlinks(await getDeployedCoinlinks(web3.signer));
+            const balance = await getCoinlinkFactoryBalance(web3.provider);
+            setFactoryBalance(ethers.utils.formatEther(balance));
+        } catch (error) {
+            console.error(error);
+        }
+    }
 
     return (
         <div className={'App h-screen'}>
@@ -32,13 +51,21 @@ const App = () => {
                 </AppBar>
             </Box>
             <Box component={"main"} className={'flex gap-2 content-center'}>
-                <div className="flex flex-col m-4 gap-2">
+                <div className="flex flex-col m-4 gap-2 w-1/5">
                     <Link to={`/`} className="flex items-center gap-2">
                         <Fab color="primary" aria-label="add">
                             <HomeIcon/>
                         </Fab>
                         <Typography variant="h6">HOME</Typography>
                     </Link>
+                    <div className="flex items-center gap-2">
+                        <Fab disabled={!web3.signer || +initialAmount > +factoryBalance} color="primary"
+                             aria-label="add" onClick={onDeployCoinlink}>
+                            <PlusIcon/>
+                        </Fab>
+                        <Typography variant="h6">New OTA</Typography>
+                    </div>
+                    <Divider className="divider" flexItem/>
                     {coinlinks.map((coinlink: ethers.Contract, index: number) =>
                         <Link key={index} to={`/coinlinks/${coinlink.address}`} className="flex items-center gap-2">
                             <Fab color="primary" aria-label="add">
@@ -48,10 +75,13 @@ const App = () => {
                         </Link>
                     )}
                 </div>
-                    <Routes>
-                        <Route path="/" element={<AdminPanel coinlinks={coinlinks} setCoinlinks={setCoinlinks}/>}/>
-                        <Route path="coinlinks/:address" element={<Coinlink/>}/>
-                    </Routes>
+                <Routes>
+                    <Route path="/" element={<AdminPanel coinlinks={coinlinks} setCoinlinks={setCoinlinks}
+                                                         balance={factoryBalance} setBalance={setFactoryBalance}
+                                                         initialAmount={initialAmount}
+                                                         setInitialAmount={setInitialAmount}/>}/>
+                    <Route path="coinlinks/:address" element={<Coinlink/>}/>
+                </Routes>
             </Box>
         </div>
     );

@@ -5,6 +5,7 @@ import {
     Button,
     Card,
     CardContent,
+    Divider,
     FormControl,
     InputLabel,
     MenuItem,
@@ -27,14 +28,16 @@ import {BigNumber, ethers} from "ethers";
 interface AdminPanelProps {
     coinlinks: any[];
     setCoinlinks: any;
+    balance: string;
+    setBalance: any;
+    initialAmount: string;
+    setInitialAmount: any;
 }
 
 const AdminPanel: FC<AdminPanelProps> = (props) => {
     const web3 = useWeb3();
-    const [key, setKey] = useState('0');
+    const [key, setKey] = useState('');
     const [value, setValue] = useState('');
-    const [initialAmount, setInitialAmount] = useState('');
-    const [balance, setBalance] = useState('');
     const [nfts, setNfts] = useState<string[]>([]);
 
     useEffect(() => {
@@ -55,11 +58,12 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         if (!web3.signer || !web3.provider || !web3.account) return;
         try {
             const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
-            setInitialAmount(ethers.utils.formatEther(initialAmount));
+            props.setInitialAmount(ethers.utils.formatEther(initialAmount));
             const balance = await getCoinlinkFactoryBalance(web3.provider);
-            setBalance(ethers.utils.formatEther(balance));
+            props.setBalance(ethers.utils.formatEther(balance));
             const nfts = await getWalletNfts(web3.signer, web3.account);
             setNfts(nfts.map((nft: BigNumber) => nft.toString()));
+            console.log(nfts);
             const coinlinks = await getDeployedCoinlinks(web3.signer);
             props.setCoinlinks(coinlinks);
         } catch (error) {
@@ -74,7 +78,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             console.log('result', result);
             props.setCoinlinks(await getDeployedCoinlinks(web3.signer));
             const balance = await getCoinlinkFactoryBalance(web3.provider);
-            setBalance(ethers.utils.formatEther(balance));
+            props.setBalance(ethers.utils.formatEther(balance));
         } catch (error) {
             console.error(error);
         }
@@ -91,7 +95,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             }
             console.log('result', result);
             const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
-            setInitialAmount(ethers.utils.formatEther(initialAmount));
+            props.setInitialAmount(ethers.utils.formatEther(initialAmount));
         } catch (error) {
             console.error(error);
         }
@@ -130,7 +134,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         )
     } else {
         return (
-            <div className="flex flex-col items-start justify-center text-white gap-3 mx-5">
+            <div className="flex flex-col items-start justify-center text-white gap-3 mx-5 flex-1">
                 <Typography variant="h5">Status</Typography>
                 <div className={'flex flex-col items-start'}>
                     <Typography variant="body1" className='green-text uppercase'>Connection Status</Typography>
@@ -140,7 +144,8 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                     <Typography variant="body1" className='green-text uppercase'>Wallet Address</Typography>
                     <Typography variant="body1">{web3.account}</Typography>
                 </div>
-                {nfts.length > 0 && <Typography variant="body1" className='green-text uppercase'>Wallet NFTs</Typography>}
+                {nfts.length > 0 &&
+                    <Typography variant="body1" className='green-text uppercase'>Wallet NFTs</Typography>}
                 <div className={'flex gap-2 m-2 justify-center flex-wrap'}>
                     {nfts.map((nft, index) =>
                         <Card key={index}>
@@ -151,27 +156,41 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                             </CardContent>
                         </Card>)}
                 </div>
+                <Divider className="divider" flexItem/>
+                <Typography variant="h5">Coinlinks</Typography>
                 <FormControl>
-                    <InputLabel>Variable</InputLabel>
-                    <Select
-                        value={key}
-                        label="Variable"
-                        onChange={handleKeyVariableChange}
-                    >
-                        <MenuItem value={'0'}>Initial amount</MenuItem>
-                    </Select>
-                    <TextField label="Value" value={value} type="number"
-                               onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!web3.signer || !key}>Save
-                        variable</Button>
+                    <div className="flex">
+                        <InputLabel sx={{color: 'gray'}}>Variable</InputLabel>
+                        <Select
+                            sx={{
+                                width: 300,
+                                color: 'white',
+                                backgroundColor: '#1E293B',
+                                // border: '1px solid #64748B',
+                            }}
+                            value={key}
+                            onChange={handleKeyVariableChange}
+                        >
+                            <MenuItem value={'0'}>Initial amount</MenuItem>
+                        </Select>
+                        <TextField label="Value" value={value} type="number"
+                                   onChange={handleValueVariableChange}/>
+                        <Button variant="contained" onClick={onSaveVariable} disabled={!web3.signer || !key}>Save
+                            variable</Button>
+                    </div>
                 </FormControl>
-                <Typography variant="body2">
-                    Initial amount: {initialAmount} CAM
-                    <br/>
-                    Balance: {balance} CAM
-                </Typography>
+                <div className='flex w-full gap-10'>
+                    <div className='flex flex-col items-start'>
+                        <Typography variant="body1" className='green-text uppercase'>Initial Amount</Typography>
+                        <Typography variant="body1" className='uppercase'>{props.initialAmount} CAM</Typography>
+                    </div>
+                    <div className='flex flex-col items-start'>
+                        <Typography variant="body1" className='green-text uppercase'>Balance</Typography>
+                        <Typography variant="body1" className='uppercase'>{props.balance} CAM</Typography>
+                    </div>
+                </div>
                 <Button variant="contained" onClick={onDeployCoinlink}
-                        disabled={!web3.signer || +initialAmount > +balance}>Deploy
+                        disabled={!web3.signer || +props.initialAmount > +props.balance}>Deploy
                     Coinlink</Button>
                 <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
             </div>
