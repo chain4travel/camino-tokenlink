@@ -16,7 +16,6 @@ import {
 } from "@mui/material";
 import {useWeb3} from "../../Web3ModalContext";
 import {
-    deployCoinlink,
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
     getDeployedCoinlinks,
@@ -71,19 +70,6 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         }
     };
 
-    const onDeployCoinlink = async () => {
-        if (!web3.signer || !web3.provider) return;
-        try {
-            const result = await deployCoinlink(web3.signer);
-            console.log('result', result);
-            props.setCoinlinks(await getDeployedCoinlinks(web3.signer));
-            const balance = await getCoinlinkFactoryBalance(web3.provider);
-            props.setBalance(ethers.utils.formatEther(balance));
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
     const onSaveVariable = async () => {
         if (!web3.signer || !key || !value) return;
         try {
@@ -96,17 +82,6 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             console.log('result', result);
             const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
             props.setInitialAmount(ethers.utils.formatEther(initialAmount));
-        } catch (error) {
-            console.error(error);
-        }
-    }
-
-    const onGetDeployedCoinlinks = async () => {
-        if (!web3.signer) return;
-        try {
-            const result = await getDeployedCoinlinks(web3.signer);
-            console.log('result', result);
-            props.setCoinlinks(result);
         } catch (error) {
             console.error(error);
         }
@@ -166,15 +141,20 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                                 width: 300,
                                 color: 'white',
                                 backgroundColor: '#1E293B',
-                                // border: '1px solid #64748B',
                             }}
                             value={key}
+                            label={'Variable'}
                             onChange={handleKeyVariableChange}
+                            variant={'outlined'}
                         >
                             <MenuItem value={'0'}>Initial amount</MenuItem>
                         </Select>
                         <TextField label="Value" value={value} type="number"
-                                   onChange={handleValueVariableChange}/>
+                                   onChange={handleValueVariableChange}
+                                   sx={{
+                                       color: 'white',
+                                       backgroundColor: '#1E293B',
+                                   }}/>
                         <Button variant="contained" onClick={onSaveVariable} disabled={!web3.signer || !key}>Save
                             variable</Button>
                     </div>
@@ -189,10 +169,6 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                         <Typography variant="body1" className='uppercase'>{props.balance} CAM</Typography>
                     </div>
                 </div>
-                <Button variant="contained" onClick={onDeployCoinlink}
-                        disabled={!web3.signer || +props.initialAmount > +props.balance}>Deploy
-                    Coinlink</Button>
-                <Button variant="contained" onClick={onGetDeployedCoinlinks}>Get Deployed Coinlinks</Button>
             </div>
         )
     }
