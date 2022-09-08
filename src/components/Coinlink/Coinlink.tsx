@@ -10,9 +10,7 @@ import {
 } from "../../services/web3Service";
 import {
     Button,
-    Card,
-    CardActions,
-    CardContent,
+    Divider,
     FormControl,
     InputLabel,
     MenuItem,
@@ -118,53 +116,65 @@ const Coinlink = () => {
     }
 
     return (
-        <Card>
-            <CardContent>
-                <Typography sx={{fontSize: 14}} color="text.secondary" gutterBottom>
-                    Owner: {owner}
-                </Typography>
-                <FormControl>
-                    <TextField value={newOwner} onChange={handleOwnerChange} fullWidth/>
-                    <Button onClick={onChangeOwner} disabled={!ethers.utils.isAddress(newOwner)} variant={'contained'}>Change
-                        Owner</Button>
-                </FormControl>
-                <Typography variant="h5" component="div">
-                    Coinlink
-                </Typography>
-                <Typography sx={{mb: 1.5}} color="text.secondary">
-                    {coinlinkContract.address}
-                </Typography>
-                <Typography variant="body2">
-                    Initial amount: {initialAmount} CAM
-                    <br/>
-                    Review reward: {reviewReward} CAM
-                    <br/>
-                    Balance: {balance} CAM
-                </Typography>
-                <FormControl>
-                    <InputLabel>Variable</InputLabel>
-                    <Select
-                        value={key}
-                        label="Variable"
-                        onChange={handleKeyVariableChange}
-                    >
-                        <MenuItem value={'0'}>Initial amount</MenuItem>
-                        <MenuItem value={'1'}>Review reward</MenuItem>
-                    </Select>
-                    <TextField label="Value" value={value} type="number"
-                               onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
-                </FormControl>
-                <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
-                    {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
+        <div className="flex flex-col items-start justify-center text-white gap-3 mx-5 flex-1">
+            <Typography variant="h5">OTA</Typography>
+            <Typography variant="body1" className='green-text uppercase'>Address</Typography>
+            <Typography variant="body1">
+                {coinlinkContract.address}
+            </Typography>
+            <Typography variant="body1" className='green-text uppercase'>
+                Owner
+            </Typography>
+            <Typography variant="body1">{owner}</Typography>
+            <FormControl>
+                <TextField placeholder='e.g. 0xsdsdw9d9...832z812698' label="New owner" value={newOwner}
+                           onChange={handleOwnerChange} fullWidth
+                           sx={{
+                               color: 'white',
+                               backgroundColor: '#1E293B',
+                           }}/>
+                <Button onClick={onChangeOwner} disabled={!ethers.utils.isAddress(newOwner)} variant={'contained'}>Change
+                    Owner</Button>
+            </FormControl>
+            <Divider className="divider" flexItem/>
+            <Typography variant="h5">Coin to enduser</Typography>
+            <div className='flex w-full gap-10'>
+                <div className='flex flex-col items-start'>
+                    <Typography variant="body1" className='green-text uppercase'>Initial Amount</Typography>
+                    <Typography variant="body1" className='uppercase'>{initialAmount} CAM</Typography>
                 </div>
-            </CardContent>
-            <CardActions>
-                <Button size="small" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
-                    Account</Button>
-                <Button size="small" onClick={fetchAccounts}>Fetch Accounts</Button>
-            </CardActions>
-        </Card>
+                <div className='flex flex-col items-start'>
+                    <Typography variant="body1" className='green-text uppercase'>Review reward</Typography>
+                    <Typography variant="body1" className='uppercase'>{reviewReward} CAM</Typography>
+                </div>
+                <div className='flex flex-col items-start'>
+                    <Typography variant="body1" className='green-text uppercase'>Balance</Typography>
+                    <Typography variant="body1" className='uppercase'>{balance} CAM</Typography>
+                </div>
+            </div>
+            <FormControl>
+                <InputLabel>Variable</InputLabel>
+                <Select
+                    value={key}
+                    label="Variable"
+                    onChange={handleKeyVariableChange}
+                >
+                    <MenuItem value={'0'}>Initial amount</MenuItem>
+                    <MenuItem value={'1'}>Review reward</MenuItem>
+                </Select>
+                <TextField label="Value" value={value} type="number"
+                           onChange={handleValueVariableChange}/>
+                <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+            </FormControl>
+            <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
+                {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
+            </div>
+            <Button size="small" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
+                Account</Button>
+            <Button size="small" onClick={fetchAccounts}>Fetch Accounts</Button>
+            <Divider className="divider" flexItem/>
+            <Typography variant="h5">Loyalty program</Typography>
+        </div>
     )
 };
 

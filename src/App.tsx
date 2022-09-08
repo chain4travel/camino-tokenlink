@@ -32,7 +32,7 @@ const App = () => {
     }
 
     return (
-        <div className={'App h-screen'}>
+        <div className={'App h-min-screen'}>
             <Box sx={{flexGrow: 1}}>
                 <AppBar position="static">
                     <Toolbar className="toolbar">
