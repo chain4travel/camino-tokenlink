@@ -56,7 +56,7 @@ const App = () => {
                         <Fab color="primary" aria-label="add">
                             <HomeIcon/>
                         </Fab>
-                        <Typography variant="h6">HOME</Typography>
+                        <Typography sx={{color : 'primary.contrastText'}} variant="h6">HOME</Typography>
                     </Link>
                     <div className="flex items-center gap-2">
                         <Fab disabled={!web3.signer || +initialAmount > +factoryBalance} color="primary"

@@ -3,7 +3,8 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import App from './App';
 import reportWebVitals from './reportWebVitals';
-import {createTheme, ThemeProvider} from "@mui/material";
+// import {createTheme, ThemeProvider} from "@mui/material";
+import { ThemeProvider } from './styles/theme/ThemeProvider';
 import {BrowserRouter} from "react-router-dom";
 import {Web3Provider} from "./Web3ModalContext";
 
@@ -11,22 +12,10 @@ const root = ReactDOM.createRoot(
     document.getElementById('root') as HTMLElement
 );
 
-const theme = createTheme({
-    palette: {
-        background: {
-            paper: '#ffffff', // your color
-        },
-    },
-    typography: {
-        fontFamily: [
-            'Poppins',
-        ].join(",")
-    }
-});
 root.render(
     <React.StrictMode>
         <BrowserRouter>
-            <ThemeProvider theme={theme}>
+            <ThemeProvider>
                 <Web3Provider>
                     <App/>
                 </Web3Provider>
