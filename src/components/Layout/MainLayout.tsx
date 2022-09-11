@@ -1,10 +1,9 @@
-import HomeIcon from "@mui/icons-material/HomeOutlined";
 import { Box } from "@mui/material";
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
-import NavBar from "./components/NavBar";
-import SideBar from "./components/SideBar";
-import { SideBarProps } from "./components/SideBar";
+import NavBar from "../NavBar";
+import SideBar from "../SideBar";
+import { SideBarProps } from "../SideBar";
 
 const MainLayout: FC<SideBarProps> = ({
   coinlinks,

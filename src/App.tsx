@@ -10,7 +10,7 @@ import {
   getDeployedCoinlinks,
 } from "./services/web3Service";
 import { useWeb3 } from "./Web3ModalContext";
-import MainLayout from "./MainLayout";
+import MainLayout from "./components/Layout/MainLayout";
 
 const App = () => {
   const web3 = useWeb3();
