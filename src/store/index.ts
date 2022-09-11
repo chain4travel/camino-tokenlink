@@ -1,13 +1,13 @@
-/**
- * Create the store with dynamic reducers
- */
 import { store } from "../index";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
+import web3ConfigReducer from "./web3-config";
 
 export function configureAppStore() {
   const store = configureStore({
-    reducer: {},
+    reducer: {
+      web3Resources: web3ConfigReducer,
+    },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
         serializableCheck: false,

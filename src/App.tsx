@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Coinlink from "./components/Coinlink/Coinlink";
@@ -11,13 +11,15 @@ import {
 } from "./services/web3Service";
 import { useWeb3 } from "./Web3ModalContext";
 import MainLayout from "./components/Layout/MainLayout";
+import { useAppDispatch } from "./store";
+import { connectWeb3 } from "./store/utils";
 
 const App = () => {
   const web3 = useWeb3();
   const [coinlinks, setCoinlinks] = useState([]);
   const [factoryBalance, setFactoryBalance] = useState("");
   const [initialAmount, setInitialAmount] = useState("");
-
+  const dispatch = useAppDispatch();
   const onDeployCoinlink = async () => {
     if (!web3.signer || !web3.provider) return;
     try {
@@ -30,7 +32,9 @@ const App = () => {
       console.error(error);
     }
   };
-
+  useEffect(() => {
+    dispatch(connectWeb3());
+  }, []);
   return (
     <BrowserRouter>
       <Routes>
