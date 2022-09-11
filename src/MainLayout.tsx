@@ -1,5 +1,5 @@
 import HomeIcon from "@mui/icons-material/HomeOutlined";
-import { Box } from "@mui/system";
+import { Box } from "@mui/material";
 import { FC } from "react";
 import { Outlet } from "react-router-dom";
 import NavBar from "./components/NavBar";

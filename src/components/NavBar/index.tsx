@@ -1,5 +1,4 @@
-import { AppBar, Divider, Toolbar, Typography } from "@mui/material";
-import { Box } from "@mui/system";
+import { AppBar, Box, Divider, Toolbar, Typography } from "@mui/material";
 import CaminoLogo from "../../assets/camino_logo.png";
 const NavBar = () => {
   return (
