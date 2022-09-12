@@ -2,11 +2,13 @@ import { store } from "../index";
 import { configureStore } from "@reduxjs/toolkit";
 import { TypedUseSelectorHook, useSelector, useDispatch } from "react-redux";
 import web3ConfigReducer from "./web3-config";
+import wallet from "./wallet";
 
 export function configureAppStore() {
   const store = configureStore({
     reducer: {
       web3Resources: web3ConfigReducer,
+      wallet,
     },
     middleware: (getDefaultMiddleware) =>
       getDefaultMiddleware({
