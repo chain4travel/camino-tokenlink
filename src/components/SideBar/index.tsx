@@ -1,12 +1,7 @@
 import { Link } from "react-router-dom";
 import { Divider, Fab, Typography } from "@mui/material";
 import { useWeb3 } from "../../Web3ModalContext";
-import { FC, useState } from "react";
-import {
-  deployCoinlink,
-  getCoinlinkFactoryBalance,
-  getDeployedCoinlinks,
-} from "../../services/web3Service";
+import { FC } from "react";
 import DomainIcon from "@mui/icons-material/Domain";
 import HomeIcon from "@mui/icons-material/HomeOutlined";
 import PlusIcon from "@mui/icons-material/Add";
@@ -41,7 +36,7 @@ const SideBar: FC<SideBarProps> = (props) => {
         >
           <PlusIcon />
         </Fab>
-        <Typography variant="h6">New OTA</Typography>
+        <Typography sx={{ color: "primary.contrastText" }} variant="h6">New OTA</Typography>
       </div>
       <Divider className="divider" flexItem />
       {coinlinks.map((coinlink: ethers.Contract, index: number) => (
@@ -53,7 +48,7 @@ const SideBar: FC<SideBarProps> = (props) => {
           <Fab color="primary" aria-label="add">
             <DomainIcon />
           </Fab>
-          <Typography variant="h6">OTA #{index + 1}</Typography>
+          <Typography sx={{ color: "primary.contrastText" }} variant="h6">OTA #{index + 1}</Typography>
         </Link>
       ))}
     </div>

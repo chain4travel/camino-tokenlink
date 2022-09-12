@@ -126,7 +126,7 @@ const Coinlink = () => {
                 Owner
             </Typography>
             <Typography variant="body1">{owner}</Typography>
-            <FormControl>
+            <FormControl className="w-full">
                 <TextField placeholder='e.g. 0xsdsdw9d9...832z812698' label="New owner" value={newOwner}
                            onChange={handleOwnerChange} fullWidth
                            sx={{
@@ -152,19 +152,30 @@ const Coinlink = () => {
                     <Typography variant="body1" className='uppercase'>{balance} CAM</Typography>
                 </div>
             </div>
-            <FormControl>
-                <InputLabel>Variable</InputLabel>
-                <Select
-                    value={key}
-                    label="Variable"
-                    onChange={handleKeyVariableChange}
-                >
-                    <MenuItem value={'0'}>Initial amount</MenuItem>
-                    <MenuItem value={'1'}>Review reward</MenuItem>
-                </Select>
-                <TextField label="Value" value={value} type="number"
-                           onChange={handleValueVariableChange}/>
-                <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+            <FormControl className='w-full'>
+                <div className="flex">
+                    <InputLabel sx={{ color: "gray" }}>Variable</InputLabel>
+                    <Select
+                        sx={{
+                            width: 300,
+                            color: "white",
+                            backgroundColor: "#1E293B",
+                        }}
+                        value={key}
+                        label="Variable"
+                        onChange={handleKeyVariableChange}
+                    >
+                        <MenuItem value={'0'}>Initial amount</MenuItem>
+                        <MenuItem value={'1'}>Review reward</MenuItem>
+                    </Select>
+                    <TextField label="Value" value={value} type="number"
+                               sx={{
+                                   color: "white",
+                                   backgroundColor: "#1E293B",
+                               }}
+                               onChange={handleValueVariableChange}/>
+                    <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+                </div>
             </FormControl>
             <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                 {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}

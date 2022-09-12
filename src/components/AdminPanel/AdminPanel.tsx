@@ -1,6 +1,5 @@
 import React, { FC, useEffect, useState } from "react";
 import "./AdminPanel.css";
-import Astronaut from "./../../assets/astronaut.png";
 import {
   Button,
   Card,
@@ -134,7 +133,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
       </div>
       <Divider className="divider" flexItem />
       <Typography variant="h5">Coinlinks</Typography>
-      <FormControl>
+      <FormControl className='w-full'>
         <div className="flex">
           <InputLabel sx={{ color: "gray" }}>Variable</InputLabel>
           <Select
