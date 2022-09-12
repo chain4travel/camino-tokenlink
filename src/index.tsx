@@ -1,38 +1,24 @@
-import React from 'react';
-import ReactDOM from 'react-dom/client';
-import './index.css';
-import App from './App';
-import reportWebVitals from './reportWebVitals';
-import {createTheme, ThemeProvider} from "@mui/material";
-import {BrowserRouter} from "react-router-dom";
-import {Web3Provider} from "./Web3ModalContext";
+import React from "react";
+import ReactDOM from "react-dom/client";
+import "./index.css";
+import App from "./App";
+import reportWebVitals from "./reportWebVitals";
+import { ThemeProvider } from "./styles/theme/ThemeProvider";
+// import { BrowserRouter } from "react-router-dom";
+import { Web3Provider } from "./Web3ModalContext";
 
 const root = ReactDOM.createRoot(
-    document.getElementById('root') as HTMLElement
+  document.getElementById("root") as HTMLElement
 );
 
-const theme = createTheme({
-    palette: {
-        background: {
-            paper: '#ffffff', // your color
-        },
-    },
-    typography: {
-        fontFamily: [
-            'Poppins',
-        ].join(",")
-    }
-});
 root.render(
-    <React.StrictMode>
-        <BrowserRouter>
-            <ThemeProvider theme={theme}>
-                <Web3Provider>
-                    <App/>
-                </Web3Provider>
-            </ThemeProvider>
-        </BrowserRouter>
-    </React.StrictMode>
+  <React.StrictMode>
+    <ThemeProvider>
+      <Web3Provider>
+        <App />
+      </Web3Provider>
+    </ThemeProvider>
+  </React.StrictMode>
 );
 
 // If you want to start measuring performance in your app, pass a function
