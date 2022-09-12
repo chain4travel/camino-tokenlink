@@ -1,4 +1,4 @@
-import React, { FC, useEffect, useState } from "react";
+import React, {FC, useEffect, useState} from "react";
 import "./AdminPanel.css";
 import {
   Button,
@@ -13,15 +13,16 @@ import {
   TextField,
   Typography,
 } from "@mui/material";
-import { useWeb3 } from "../../Web3ModalContext";
+import {useWeb3} from "../../Web3ModalContext";
 import {
   getCoinlinkFactoryBalance,
   getCoinlinkFactoryInitialAmount,
   getDeployedCoinlinks,
-  getWalletNfts,
   saveCoinlinkFactoryVariable,
 } from "../../services/web3Service";
-import { BigNumber, ethers } from "ethers";
+import {ethers} from "ethers";
+import {getNfts} from "../../store/wallet";
+import {useSelector} from "react-redux";
 
 export interface AdminPanelProps {
   coinlinks: any[];
@@ -36,7 +37,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
   const web3 = useWeb3();
   const [key, setKey] = useState("");
   const [value, setValue] = useState("");
-  const [nfts, setNfts] = useState<string[]>([]);
+  const nfts = useSelector(getNfts);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -59,8 +60,6 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
       props.setInitialAmount(ethers.utils.formatEther(initialAmount));
       const balance = await getCoinlinkFactoryBalance(web3.provider);
       props.setBalance(ethers.utils.formatEther(balance));
-      const nfts = await getWalletNfts(web3.signer, web3.account);
-      setNfts(nfts.map((nft: BigNumber) => nft.toString()));
       console.log(nfts);
       const coinlinks = await getDeployedCoinlinks(web3.signer);
       props.setCoinlinks(coinlinks);

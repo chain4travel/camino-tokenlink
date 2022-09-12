@@ -1,13 +1,13 @@
-import { createAsyncThunk } from '@reduxjs/toolkit'
-import { store } from '../index'
-import { ethers, providers } from 'ethers'
+import {createAsyncThunk} from '@reduxjs/toolkit'
+import {store} from '../index'
+import {BigNumber, ethers, providers} from 'ethers'
 import {
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
     getDeployedCoinlinks,
     getWalletNfts,
 } from '../services/web3Service'
-import { setBalance, setCoinLinks, setInitialAmount } from './wallet'
+import {setBalance, setCoinLinks, setInitialAmount, setNfts} from './wallet'
 
 export const connectWallet = createAsyncThunk(
     'connectWallet',
@@ -24,9 +24,9 @@ export const connectWallet = createAsyncThunk(
             dispatch(setBalance(ethers.utils.formatEther(balance)))
             const nfts = await getWalletNfts(
                 state.web3Resources.signer,
-                state.web3Resources.provider.account
+                state.web3Resources.account
             )
-            // dispatch(set)
+            dispatch(setNfts(nfts.map((nft: BigNumber) => nft.toString())));
             const coinlinks = await getDeployedCoinlinks(
                 state.web3Resources.signer
             )
