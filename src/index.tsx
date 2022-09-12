@@ -4,20 +4,23 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { ThemeProvider } from "./styles/theme/ThemeProvider";
-// import { BrowserRouter } from "react-router-dom";
 import { Web3Provider } from "./Web3ModalContext";
-
+import { configureAppStore } from "./store/index";
+import { Provider } from "react-redux";
+export const store = configureAppStore();
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
 );
 
 root.render(
   <React.StrictMode>
-    <ThemeProvider>
-      <Web3Provider>
-        <App />
-      </Web3Provider>
-    </ThemeProvider>
+    <Provider store={store}>
+      <ThemeProvider>
+        <Web3Provider>
+          <App />
+        </Web3Provider>
+      </ThemeProvider>
+    </Provider>
   </React.StrictMode>
 );
 
