@@ -8,9 +8,8 @@ import {
   getWalletNfts,
 } from "../services/web3Service";
 import { setBalance, setCoinLinks, setInitialAmount } from "./wallet";
-import { RootState } from ".";
 
-const connectWallet = createAsyncThunk(
+export const connectWallet = createAsyncThunk(
   "connectWallet",
   async (_, { getState, dispatch }) => {
     console.log("tagneee");
