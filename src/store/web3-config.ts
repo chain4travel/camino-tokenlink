@@ -5,6 +5,7 @@ import WalletConnect from "@walletconnect/web3-provider";
 // import Web3Modal from "web3modal";
 import CoinbaseWalletSDK from "@coinbase/wallet-sdk";
 import { connectWeb3 } from "./utils";
+import { RootState } from ".";
 // import { RootState } from "./index";
 
 interface IWeb3Context {
@@ -56,5 +57,11 @@ const web3ConfigSlice = createSlice({
   },
 });
 
-// export const {} = web3ConfigSlice.actions;
+// Select Signer
+export const getSigner = (state: RootState) => state.web3Resources.signer;
+// Select Provider
+export const getProvider = (state: RootState) => state.web3Resources.provider;
+// Select Account
+export const getAccount = (state: RootState) => state.web3Resources.account;
+
 export default web3ConfigSlice.reducer;

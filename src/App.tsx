@@ -32,9 +32,6 @@ const App = () => {
       console.error(error);
     }
   };
-  useEffect(() => {
-    dispatch(connectWeb3());
-  }, []);
   return (
     <BrowserRouter>
       <Routes>
