@@ -9,11 +9,13 @@ import {useWeb3} from "./Web3ModalContext";
 import MainLayout from "./components/Layout/MainLayout";
 import {useAppDispatch} from "./store";
 import {connectWeb3} from "./store/utils";
+import {useSelector} from "react-redux";
+import {getCoinLinks, setCoinLinks} from "./store/wallet";
 
 const App = () => {
     const web3 = useWeb3();
     const dispatch = useAppDispatch();
-    const [coinlinks, setCoinlinks] = useState([]);
+    const coinlinks = useSelector(getCoinLinks);
     const [factoryBalance, setFactoryBalance] = useState("");
     const [initialAmount, setInitialAmount] = useState("");
 
@@ -26,7 +28,7 @@ const App = () => {
         try {
             const result = await deployCoinlink(web3.signer);
             console.log("result", result);
-            setCoinlinks(await getDeployedCoinlinks(web3.signer));
+            dispatch(setCoinLinks(await getDeployedCoinlinks(web3.signer)));
             const balance = await getCoinlinkFactoryBalance(web3.provider);
             setFactoryBalance(ethers.utils.formatEther(balance));
         } catch (error) {
@@ -51,8 +53,6 @@ const App = () => {
                         path="/"
                         element={
                             <AdminPanel
-                                coinlinks={coinlinks}
-                                setCoinlinks={setCoinlinks}
                                 balance={factoryBalance}
                                 setBalance={setFactoryBalance}
                                 initialAmount={initialAmount}
