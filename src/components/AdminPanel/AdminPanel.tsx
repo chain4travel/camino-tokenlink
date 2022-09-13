@@ -24,6 +24,8 @@ import {ethers} from "ethers";
 import {getNfts, setCoinLinks} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
+// @ts-ignore
+import Identicon from 'react-identicons';
 
 export interface AdminPanelProps {
     balance: string;
@@ -124,7 +126,8 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             <div className={"flex gap-2 m-2 justify-center flex-wrap"}>
                 {nfts.map((nft, index) => (
                     <Card key={index}>
-                        <CardContent>
+                        <CardContent className={'flex flex-col items-center gap-2'}>
+                            <Identicon string={nft} size={100}/>
                             <Typography variant="body2">{nft}</Typography>
                         </CardContent>
                     </Card>
