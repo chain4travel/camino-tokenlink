@@ -39,15 +39,25 @@ const Coinlink = () => {
     useEffect(() => {
         const fetchData = async () => {
             await web3.connect();
-            console.log(web3)
-            setCoinlinkContract(new ethers.Contract(params.address as string, coinlink.abi, web3.signer));
-            await fetchValues();
-            await fetchAccounts();
-            await fetchBalance();
-            await fetchOwner();
-        }
+        };
         fetchData().catch(console.error);
-    }, [params.address]);
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            if (!web3.signer || !web3.provider || !web3.account) return;
+            try {
+                setCoinlinkContract(new ethers.Contract(params.address as string, coinlink.abi, web3.signer));
+                await fetchValues();
+                await fetchAccounts();
+                await fetchBalance();
+                await fetchOwner();
+            } catch (error) {
+                console.error(error);
+            }
+        };
+        fetchData().catch(console.error);
+    }, [web3, params.address]);
 
     const fetchValues = async () => {
         const varInitialAmount = await coinlinkContract.vars(0);
@@ -115,7 +125,7 @@ const Coinlink = () => {
     }
 
     return (
-        <div className="flex flex-col items-start justify-center text-white gap-3 mx-5 flex-1" key={params.address}>
+        <div className="flex flex-col items-start text-white gap-3 mx-5 flex-1" key={params.address}>
             <Typography variant="h5">OTA</Typography>
             <Typography variant="body1" className='green-text uppercase'>Address</Typography>
             <Typography variant="body1">
@@ -153,7 +163,7 @@ const Coinlink = () => {
             </div>
             <FormControl className='w-full'>
                 <div className="flex gap-3">
-                    <InputLabel sx={{ color: "gray" }}>Variable</InputLabel>
+                    <InputLabel sx={{color: "gray"}}>Variable</InputLabel>
                     <Select
                         sx={{
                             width: 300,
@@ -173,16 +183,17 @@ const Coinlink = () => {
                                    backgroundColor: "#1E293B",
                                }}
                                onChange={handleValueVariableChange}/>
-                    <Button className={'whitespace-nowrap'} variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+                    <Button className={'whitespace-nowrap'} variant="contained" onClick={onSaveVariable}
+                            disabled={!key}>Save variable</Button>
                 </div>
             </FormControl>
             <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                 {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
             </div>
             <div className='flex w-full gap-10'>
-                <Button className={'whitespace-nowrap'} variant="contained" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
+                <Button className={'whitespace-nowrap'} variant="contained" onClick={onDeployAccount}
+                        disabled={initialAmount > balance}>Deploy
                     Account</Button>
-                <Button className={'whitespace-nowrap'} variant="contained" onClick={fetchAccounts}>Fetch Accounts</Button>
             </div>
             <Divider className="divider" flexItem/>
             <Typography variant="h5">Loyalty program</Typography>

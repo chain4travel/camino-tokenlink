@@ -5,13 +5,14 @@ import {
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
     getDeployedCoinlinks,
+    getOwnedAccounts,
     getWalletNfts,
 } from '../services/web3Service'
-import {setBalance, setCoinLinks, setInitialAmount, setNfts} from './wallet'
+import {setAccounts, setBalance, setCoinLinks, setInitialAmount, setNfts} from './wallet'
 
 export const connectWallet = createAsyncThunk(
     'connectWallet',
-    async (_, { getState, dispatch }) => {
+    async (_, {getState, dispatch}) => {
         const state: any = getState()
         try {
             const initialAmount = await getCoinlinkFactoryInitialAmount(
@@ -31,6 +32,10 @@ export const connectWallet = createAsyncThunk(
                 state.web3Resources.signer
             )
             dispatch(setCoinLinks(coinlinks))
+            const accounts = await getOwnedAccounts(
+                state.web3Resources.signer
+            )
+            dispatch(setAccounts(accounts))
         } catch (e) {
             console.error(e)
         }
@@ -47,6 +52,6 @@ export const connectWeb3 = createAsyncThunk(
         const signer = await _provider.getSigner()
         const account = await signer.getAddress()
         thunkAPI.dispatch(connectWallet)
-        return { provider: _provider, signer, account }
+        return {provider: _provider, signer, account}
     }
 )

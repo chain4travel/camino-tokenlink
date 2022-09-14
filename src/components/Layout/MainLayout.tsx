@@ -10,6 +10,7 @@ import {connectWallet} from "../../store/utils";
 
 const MainLayout: FC<SideBarProps> = ({
                                           coinlinks,
+                                          accounts,
                                           initialAmount,
                                           factoryBalance,
                                           onDeployCoinlink,
@@ -34,6 +35,7 @@ const MainLayout: FC<SideBarProps> = ({
             <Box sx={{display: "flex"}}>
                 <SideBar
                     coinlinks={coinlinks}
+                    accounts={accounts}
                     initialAmount={initialAmount}
                     factoryBalance={factoryBalance}
                     onDeployCoinlink={onDeployCoinlink}

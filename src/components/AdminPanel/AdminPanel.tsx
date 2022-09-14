@@ -106,7 +106,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
     };
 
     return (
-        <div className="flex flex-col items-start justify-center text-white gap-3 mx-5 flex-1">
+        <div className="flex flex-col items-start text-white gap-3 mx-5 flex-1">
             <Typography variant="h5">Status</Typography>
             <div className={"flex flex-col items-start"}>
                 <Typography variant="body1" className="green-text uppercase">

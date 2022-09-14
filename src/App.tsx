@@ -10,12 +10,13 @@ import MainLayout from "./components/Layout/MainLayout";
 import {useAppDispatch} from "./store";
 import {connectWeb3} from "./store/utils";
 import {useSelector} from "react-redux";
-import {getCoinLinks, setCoinLinks} from "./store/wallet";
+import {getAccounts, getCoinLinks, setCoinLinks} from "./store/wallet";
 
 const App = () => {
     const web3 = useWeb3();
     const dispatch = useAppDispatch();
     const coinlinks = useSelector(getCoinLinks);
+    const accounts = useSelector(getAccounts);
     const [factoryBalance, setFactoryBalance] = useState("");
     const [initialAmount, setInitialAmount] = useState("");
 
@@ -43,6 +44,7 @@ const App = () => {
                     element={
                         <MainLayout
                             coinlinks={coinlinks}
+                            accounts={accounts}
                             initialAmount={initialAmount}
                             factoryBalance={factoryBalance}
                             onDeployCoinlink={onDeployCoinlink}
