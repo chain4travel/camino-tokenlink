@@ -28,6 +28,10 @@ export const getCoinlinkFactoryBalance = async (provider: ethers.providers.Web3P
     return provider.getBalance((coinlinkFactory.networks as Networks)[networkId]?.address as string);
 }
 
+export const getCoinlinkFactoryAddress = () => {
+    return (coinlinkFactory.networks as Networks)[networkId]?.address as string;
+}
+
 export const getCoinlinkFactoryInitialAmount = (signer: ethers.Signer) => {
     const contract = new ethers.Contract((coinlinkFactory.networks as Networks)[networkId]?.address as string, coinlinkFactory.abi, signer);
     return contract.vars(0);

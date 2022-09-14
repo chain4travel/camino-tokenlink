@@ -18,9 +18,8 @@ code {
     monospace;
 }
 
-button {
+.gradient-button {
   background: linear-gradient(135deg, #149EED 10.48%, #B440FC 89.52%);
-  border-radius: 8px;
 }
 
 .green-text {

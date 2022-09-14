@@ -300,7 +300,7 @@ const defaultComponents = {
   MuiSelect: {
     styleOverrides: {
       select: {
-        padding: "0.5rem 0rem",
+        padding: "0.5rem 1rem",
         fontSize: "1rem",
         lineheight: "1.5rem",
       },
@@ -355,6 +355,7 @@ const defaultComponents = {
   MuiButton: {
     styleOverrides: {
       root: {
+        backgroundColor: "#149EED",
         borderWidth: "1.5px",
         "&:hover": {
           borderWidth: "1.5px",

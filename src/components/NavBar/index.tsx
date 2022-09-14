@@ -5,7 +5,7 @@ const NavBar = () => {
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar className="toolbar">
-          <div className="flex gap-3">
+          <div className="flex items-center gap-3">
             <img src={CaminoLogo} alt="logo" />
             <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
               Camino
@@ -17,7 +17,7 @@ const NavBar = () => {
               className="uppercase camino-title"
               sx={{ flexGrow: 1 }}
             >
-              Coinlink
+              Tokenlink
             </Typography>
           </div>
         </Toolbar>

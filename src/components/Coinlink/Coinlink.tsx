@@ -49,7 +49,6 @@ const Coinlink = () => {
         fetchData().catch(console.error);
     }, [params.address]);
 
-
     const fetchValues = async () => {
         const varInitialAmount = await coinlinkContract.vars(0);
         setInitialAmount(ethers.utils.formatEther(varInitialAmount));
@@ -153,7 +152,7 @@ const Coinlink = () => {
                 </div>
             </div>
             <FormControl className='w-full'>
-                <div className="flex">
+                <div className="flex gap-3">
                     <InputLabel sx={{ color: "gray" }}>Variable</InputLabel>
                     <Select
                         sx={{
@@ -174,15 +173,17 @@ const Coinlink = () => {
                                    backgroundColor: "#1E293B",
                                }}
                                onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+                    <Button className={'whitespace-nowrap'} variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
                 </div>
             </FormControl>
             <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                 {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
             </div>
-            <Button size="small" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
-                Account</Button>
-            <Button size="small" onClick={fetchAccounts}>Fetch Accounts</Button>
+            <div className='flex w-full gap-10'>
+                <Button className={'whitespace-nowrap'} variant="contained" onClick={onDeployAccount} disabled={initialAmount > balance}>Deploy
+                    Account</Button>
+                <Button className={'whitespace-nowrap'} variant="contained" onClick={fetchAccounts}>Fetch Accounts</Button>
+            </div>
             <Divider className="divider" flexItem/>
             <Typography variant="h5">Loyalty program</Typography>
         </div>

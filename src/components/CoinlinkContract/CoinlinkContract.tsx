@@ -150,7 +150,7 @@ const CoinlinkContract: FC<CoinlinkContractProps> = (props) => {
                     </Select>
                     <TextField label="Value" value={value} type="number"
                                onChange={handleValueVariableChange}/>
-                    <Button variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
+                    <Button className={'whitespace-nowrap'} variant="contained" onClick={onSaveVariable} disabled={!key}>Save variable</Button>
                 </FormControl>
                 <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
                     {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}

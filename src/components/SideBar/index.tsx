@@ -18,9 +18,9 @@ const SideBar: FC<SideBarProps> = (props) => {
   const { coinlinks, initialAmount, factoryBalance, onDeployCoinlink } = props;
   const web3 = useWeb3();
   return (
-    <div className="flex flex-col m-4 gap-2 w-1/5">
+    <div className="flex flex-col m-4 gap-3 w-1/5">
       <Link to={`/`} className="flex items-center gap-2">
-        <Fab color="primary" aria-label="add">
+        <Fab color="primary" className={'gradient-button'} aria-label="add">
           <HomeIcon />
         </Fab>
         <Typography sx={{ color: "primary.contrastText" }} variant="h6">
@@ -31,6 +31,7 @@ const SideBar: FC<SideBarProps> = (props) => {
         <Fab
           disabled={!web3.signer || +initialAmount > +factoryBalance}
           color="primary"
+          sx={{ backgroundColor: "grey.700" }}
           aria-label="add"
           onClick={onDeployCoinlink}
         >
@@ -45,7 +46,7 @@ const SideBar: FC<SideBarProps> = (props) => {
           to={`/coinlinks/${coinlink.address}`}
           className="flex items-center gap-2"
         >
-          <Fab color="primary" aria-label="add">
+          <Fab color="primary" sx={{ backgroundColor: "grey.700" }} aria-label="add">
             <DomainIcon />
           </Fab>
           <Typography sx={{ color: "primary.contrastText" }} variant="h6">OTA #{index + 1}</Typography>

@@ -13,6 +13,7 @@ const Home = () => {
             </Typography>
             <Button
                 variant="contained"
+                className={'gradient-button'}
                 onClick={() => {
                     dispatch(connectWeb3());
                 }}

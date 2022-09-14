@@ -15,6 +15,7 @@ import {
 } from "@mui/material";
 import {useWeb3} from "../../Web3ModalContext";
 import {
+    getCoinlinkFactoryAddress,
     getCoinlinkFactoryBalance,
     getCoinlinkFactoryInitialAmount,
     getDeployedCoinlinks,
@@ -39,6 +40,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
     const dispatch = useAppDispatch();
     const [key, setKey] = useState("");
     const [value, setValue] = useState("");
+    const [factoryAddress, setFactoryAddress] = useState("");
     const nfts = useSelector(getNfts);
 
     useEffect(() => {
@@ -65,6 +67,8 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             console.log(nfts);
             const coinlinks = await getDeployedCoinlinks(web3.signer);
             dispatch(setCoinLinks(coinlinks));
+            const factoryAddress = getCoinlinkFactoryAddress();
+            setFactoryAddress(factoryAddress);
         } catch (error) {
             console.error(error);
         }
@@ -118,14 +122,28 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                 </Typography>
                 <Typography variant="body1">{web3.account}</Typography>
             </div>
+            <div className="flex w-full gap-10">
+                <div className="flex flex-col items-start">
+                    <Typography variant="body1" className="green-text uppercase">
+                        Wallet Balance
+                    </Typography>
+                    <Typography variant="body1" className="uppercase">
+                        {props.balance} CAM
+                    </Typography>
+                </div>
+            </div>
             {nfts.length > 0 && (
                 <Typography variant="body1" className="green-text uppercase">
                     Wallet NFTs
                 </Typography>
             )}
-            <div className={"flex gap-2 m-2 justify-center flex-wrap"}>
+            <div className={"flex gap-3 m-2 justify-start flex-wrap w-full"}>
                 {nfts.map((nft, index) => (
-                    <Card key={index}>
+                    <Card key={index} sx={{
+                        border: '1px solid',
+                        borderColor: 'grey.500',
+                        backgroundColor: 'grey.800'
+                    }}>
                         <CardContent className={'flex flex-col items-center gap-2'}>
                             <Identicon string={nft} size={100}/>
                             <Typography variant="body2">{nft}</Typography>
@@ -134,9 +152,15 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                 ))}
             </div>
             <Divider className="divider" flexItem/>
-            <Typography variant="h5">Coinlinks</Typography>
+            <Typography variant="h5">Coinlinks factory</Typography>
+            <div className={"flex flex-col items-start"}>
+                <Typography variant="body1" className="green-text uppercase">
+                    Address
+                </Typography>
+                <Typography variant="body1">{factoryAddress}</Typography>
+            </div>
             <FormControl className='w-full'>
-                <div className="flex">
+                <div className="flex gap-3">
                     <InputLabel sx={{color: "gray"}}>Variable</InputLabel>
                     <Select
                         sx={{
@@ -165,6 +189,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                         variant="contained"
                         onClick={onSaveVariable}
                         disabled={!web3.signer || !key}
+                        className={'whitespace-nowrap'}
                     >
                         Save variable
                     </Button>
