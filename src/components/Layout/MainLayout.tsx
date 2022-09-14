@@ -1,8 +1,8 @@
 import {Box} from "@mui/material";
 import {FC, useEffect} from "react";
 import {Outlet} from "react-router-dom";
-import NavBar from "../NavBar";
-import SideBar, {SideBarProps} from "../SideBar";
+import NavBar from "../NavBar/NavBar";
+import SideBar, {SideBarProps} from "../SideBar/SideBar";
 import {getAccount, getProvider, getSigner} from "../../store/web3-config";
 import Home from "../../pages/Home";
 import {useAppDispatch, useAppSelector} from "../../store";

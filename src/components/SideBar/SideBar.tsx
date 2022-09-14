@@ -40,7 +40,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                 </Fab>
                 <Typography sx={{color: "primary.contrastText"}} variant="h6">New OTA</Typography>
             </div>
-            <Divider className="divider" flexItem/>
+            {coinlinks.length > 0 && (<Divider className="divider" flexItem/>)}
             {coinlinks.map((coinlink: ethers.Contract, index: number) => (
                 <Link
                     key={index}
@@ -53,7 +53,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                     <Typography sx={{color: "primary.contrastText"}} variant="h6">OTA #{index + 1}</Typography>
                 </Link>
             ))}
-            <Divider className="divider" flexItem/>
+            {accounts.length > 0 && (<Divider className="divider" flexItem/>)}
             {accounts.map((account: ethers.Contract, index: number) => (
                 <Link
                     key={index}

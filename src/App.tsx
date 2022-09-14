@@ -11,6 +11,7 @@ import {useAppDispatch} from "./store";
 import {connectWeb3} from "./store/utils";
 import {useSelector} from "react-redux";
 import {getAccounts, getCoinLinks, setCoinLinks} from "./store/wallet";
+import Account from "./components/Account/Account";
 
 const App = () => {
     const web3 = useWeb3();
@@ -63,6 +64,7 @@ const App = () => {
                         }
                     />
                     <Route path="coinlinks/:address" element={<Coinlink/>}/>
+                    <Route path="accounts/:address" element={<Account/>}/>
                 </Route>
             </Routes>
         </BrowserRouter>
