@@ -21,17 +21,18 @@ import {
 } from "@mui/material";
 import coinlink from '@coinlink/contracts/Coinlink.json';
 import {useWeb3} from "../../Web3ModalContext";
-import AccountContract from "../AccountContract/AccountContract";
+import {setAccounts} from "../../store/wallet";
+import {useAppDispatch} from "../../store";
 
 const Coinlink = () => {
     const web3 = useWeb3();
     const params = useParams();
+    const dispatch = useAppDispatch();
     const [initialAmount, setInitialAmount] = useState('');
     const [reviewReward, setReviewReward] = useState('');
     const [balance, setBalance] = useState('');
     const [owner, setOwner] = useState('');
     const [newOwner, setNewOwner] = useState('');
-    const [accounts, setAccounts] = useState([]);
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
     const [coinlinkContract, setCoinlinkContract] = useState<ethers.Contract>(new ethers.Contract(params.address as string, coinlink.abi, web3.provider));
@@ -93,7 +94,7 @@ const Coinlink = () => {
         if (!web3.signer) return;
         const accounts = await getDeployedAccounts(coinlinkContract, web3.signer);
         console.log(accounts);
-        setAccounts(accounts);
+        dispatch(setAccounts(accounts))
     }
 
     const handleValueVariableChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
@@ -187,9 +188,6 @@ const Coinlink = () => {
                             disabled={!key}>Save variable</Button>
                 </div>
             </FormControl>
-            <div className={'flex flex-col gap-2 m-2 justify-center flex-wrap'}>
-                {accounts.map((account, index) => <AccountContract key={index} accountContract={account}/>)}
-            </div>
             <div className='flex w-full gap-10'>
                 <Button className={'whitespace-nowrap'} variant="contained" onClick={onDeployAccount}
                         disabled={initialAmount > balance}>Deploy
