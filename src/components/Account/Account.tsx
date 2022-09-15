@@ -3,11 +3,12 @@ import './Account.css';
 import {useParams} from "react-router-dom";
 import {BigNumber, ethers} from "ethers";
 import {changeAccountOwner, getNfts, retrieveNfts} from "../../services/web3Service";
-import {Button, Card, CardContent, Divider, FormControl, TextField, Typography} from "@mui/material";
+import {Button, Divider, FormControl, TextField, Typography} from "@mui/material";
 import account from '@coinlink/contracts/Account.json';
 import {useWeb3} from "../../Web3ModalContext";
 // @ts-ignore
 import Identicon from 'react-identicons';
+import NftDisplay from "../NftDisplay/NftDisplay";
 
 const Account = () => {
     const web3 = useWeb3();
@@ -83,7 +84,7 @@ const Account = () => {
             </Typography>
             <Typography variant="body1">{owner}</Typography>
             <FormControl className="w-full">
-                <TextField placeholder='e.g. 0xsdsdw9d9...832z812698' label="New owner" value={newOwner}
+                <TextField placeholder='e.g. 0xa218...77e8' label="New owner" value={newOwner}
                            onChange={handleOwnerChange} fullWidth
                            sx={{
                                color: 'white',
@@ -107,16 +108,7 @@ const Account = () => {
                     </Typography>
                     <div className={"flex gap-3 m-2 justify-start flex-wrap w-full"}>
                         {nfts.map((nft, index) => (
-                            <Card key={index} sx={{
-                                border: '1px solid',
-                                borderColor: 'grey.500',
-                                backgroundColor: 'grey.800'
-                            }}>
-                                <CardContent className={'flex flex-col items-center gap-2'}>
-                                    <Identicon string={nft} size={100}/>
-                                    <Typography variant="body2">{nft}</Typography>
-                                </CardContent>
-                            </Card>
+                            <NftDisplay key={index} nft={nft}/>
                         ))}
                     </div>
                     <div className='flex w-full gap-10'>

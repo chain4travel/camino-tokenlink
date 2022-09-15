@@ -51,6 +51,7 @@ export const getOwnedAccounts = async (signer: ethers.Signer) => {
             return new ethers.Contract(address, account.abi, signer);
         });
     }));
+    // TODO: Filter only accounts owned by the signer, same for coinlinks
     accounts = accounts.flat(Infinity);
     console.log(accounts);
     return accounts;
@@ -75,6 +76,12 @@ export const getWalletNfts = async (signer: ethers.Signer, account: string) => {
         console.log(nft);
     }
     return nfts;
+}
+
+export const sendNft = async (signer: ethers.Signer, receiver: string, nft: string) => {
+    const nftContract = new ethers.Contract((exampleNft.networks as Networks)[networkId]?.address as string, exampleNft.abi, signer);
+    const tx = await nftContract['safeTransferFrom(address,address,uint256)'](signer.getAddress(), receiver, nft);
+    return tx.wait();
 }
 
 export const retrieveNfts = async (accountContract: ethers.Contract) => {

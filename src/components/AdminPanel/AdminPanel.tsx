@@ -2,8 +2,6 @@ import React, {FC, useEffect, useState} from "react";
 import "./AdminPanel.css";
 import {
     Button,
-    Card,
-    CardContent,
     Divider,
     FormControl,
     InputLabel,
@@ -22,11 +20,12 @@ import {
     saveCoinlinkFactoryVariable,
 } from "../../services/web3Service";
 import {ethers} from "ethers";
-import {getNfts, setCoinLinks} from "../../store/wallet";
+import {getNfts, setCoinLinks, setNfts} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
 // @ts-ignore
 import Identicon from 'react-identicons';
+import NftDisplay from "../NftDisplay/NftDisplay";
 
 export interface AdminPanelProps {
     balance: string;
@@ -105,6 +104,11 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         setKey(event.target.value as string);
     };
 
+    const removeNft = (nft: string) => {
+        const newNfts = nfts.filter((oldNft) => oldNft !== nft);
+        dispatch(setNfts(newNfts));
+    }
+
     return (
         <div className="flex flex-col items-start text-white gap-3 mx-5 flex-1">
             <Typography variant="h5">Status</Typography>
@@ -139,16 +143,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             )}
             <div className={"flex gap-3 m-2 justify-start flex-wrap w-full"}>
                 {nfts.map((nft, index) => (
-                    <Card key={index} sx={{
-                        border: '1px solid',
-                        borderColor: 'grey.500',
-                        backgroundColor: 'grey.800'
-                    }}>
-                        <CardContent className={'flex flex-col items-center gap-2'}>
-                            <Identicon string={nft} size={100}/>
-                            <Typography variant="body2">{nft}</Typography>
-                        </CardContent>
-                    </Card>
+                    <NftDisplay key={index} nft={nft} removeNft={removeNft} showSendButton/>
                 ))}
             </div>
             <Divider className="divider" flexItem/>

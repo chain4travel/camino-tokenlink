@@ -137,7 +137,7 @@ const Coinlink = () => {
             </Typography>
             <Typography variant="body1">{owner}</Typography>
             <FormControl className="w-full">
-                <TextField placeholder='e.g. 0xsdsdw9d9...832z812698' label="New owner" value={newOwner}
+                <TextField placeholder='e.g. 0xa218...77e8' label="New owner" value={newOwner}
                            onChange={handleOwnerChange} fullWidth
                            sx={{
                                color: 'white',
