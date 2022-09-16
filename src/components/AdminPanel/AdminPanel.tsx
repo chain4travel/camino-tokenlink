@@ -147,7 +147,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
                 ))}
             </div>
             <Divider className="divider" flexItem/>
-            <Typography variant="h5">Coinlinks factory</Typography>
+            <Typography variant="h5">Tokenlinks factory</Typography>
             <div className={"flex flex-col items-start"}>
                 <Typography variant="body1" className="green-text uppercase">
                     Address

@@ -46,6 +46,7 @@ export const getDeployedCoinlinks = async (signer: ethers.Signer) => {
 
 export const getOwnedAccounts = async (signer: ethers.Signer) => {
     const coinlinks = await getDeployedCoinlinks(signer);
+    console.log(coinlinks);
     let accounts = await Promise.all(coinlinks.map(async (coinlink: any) => {
         return (await coinlink.getDeployedContracts()).map((address: string) => {
             return new ethers.Contract(address, account.abi, signer);

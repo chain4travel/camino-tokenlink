@@ -127,7 +127,7 @@ const Coinlink = () => {
 
     return (
         <div className="flex flex-col items-start text-white gap-3 mx-5 flex-1" key={params.address}>
-            <Typography variant="h5">OTA</Typography>
+            <Typography variant="h5">Company</Typography>
             <Typography variant="body1" className='green-text uppercase'>Address</Typography>
             <Typography variant="body1">
                 {coinlinkContract.address}

@@ -38,7 +38,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                 >
                     <PlusIcon/>
                 </Fab>
-                <Typography sx={{color: "primary.contrastText"}} variant="h6">New OTA</Typography>
+                <Typography sx={{color: "primary.contrastText"}} variant="h6">New Company</Typography>
             </div>
             {coinlinks.length > 0 && (<Divider className="divider" flexItem/>)}
             {coinlinks.map((coinlink: ethers.Contract, index: number) => (
@@ -50,7 +50,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                     <Fab color="primary" sx={{backgroundColor: "grey.700"}} aria-label="add">
                         <DomainIcon/>
                     </Fab>
-                    <Typography sx={{color: "primary.contrastText"}} variant="h6">OTA #{index + 1}</Typography>
+                    <Typography sx={{color: "primary.contrastText"}} variant="h6">Company #{index + 1}</Typography>
                 </Link>
             ))}
             {accounts.length > 0 && (<Divider className="divider" flexItem/>)}
