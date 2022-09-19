@@ -13,14 +13,14 @@ import {
 } from "@mui/material";
 import {useWeb3} from "../../Web3ModalContext";
 import {
-    getCoinlinkFactoryAddress,
-    getCoinlinkFactoryBalance,
-    getCoinlinkFactoryInitialAmount,
-    getDeployedCoinlinks,
-    saveCoinlinkFactoryVariable,
+    getTokenlinkFactoryAddress,
+    getTokenlinkFactoryBalance,
+    getTokenlinkFactoryInitialAmount,
+    getDeployedTokenlinks,
+    saveTokenlinkFactoryVariable,
 } from "../../services/web3Service";
 import {ethers} from "ethers";
-import {getNfts, setCoinLinks, setNfts} from "../../store/wallet";
+import {getNfts, setTokenlinks, setNfts} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
 // @ts-ignore
@@ -59,14 +59,14 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
     const connectWallet = async () => {
         if (!web3.signer || !web3.provider || !web3.account) return;
         try {
-            const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
+            const initialAmount = await getTokenlinkFactoryInitialAmount(web3.signer);
             props.setInitialAmount(ethers.utils.formatEther(initialAmount));
-            const balance = await getCoinlinkFactoryBalance(web3.provider);
+            const balance = await getTokenlinkFactoryBalance(web3.provider);
             props.setBalance(ethers.utils.formatEther(balance));
             console.log(nfts);
-            const coinlinks = await getDeployedCoinlinks(web3.signer);
-            dispatch(setCoinLinks(coinlinks));
-            const factoryAddress = getCoinlinkFactoryAddress();
+            const tokenlinks = await getDeployedTokenlinks(web3.signer);
+            dispatch(setTokenlinks(tokenlinks));
+            const factoryAddress = getTokenlinkFactoryAddress();
             setFactoryAddress(factoryAddress);
         } catch (error) {
             console.error(error);
@@ -78,16 +78,16 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         try {
             let result;
             if (key === "0") {
-                result = await saveCoinlinkFactoryVariable(
+                result = await saveTokenlinkFactoryVariable(
                     key,
                     ethers.utils.parseEther(value),
                     web3.signer
                 );
             } else {
-                result = await saveCoinlinkFactoryVariable(key, value, web3.signer);
+                result = await saveTokenlinkFactoryVariable(key, value, web3.signer);
             }
             console.log("result", result);
-            const initialAmount = await getCoinlinkFactoryInitialAmount(web3.signer);
+            const initialAmount = await getTokenlinkFactoryInitialAmount(web3.signer);
             props.setInitialAmount(ethers.utils.formatEther(initialAmount));
         } catch (error) {
             console.error(error);

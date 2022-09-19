@@ -2,10 +2,10 @@ import {createSlice} from "@reduxjs/toolkit";
 import {RootState} from ".";
 
 export interface AdminPanelProps {
-    coinlinks: any[];
+    tokenlinks: any[];
     accounts: any[];
     nfts: string[];
-    //   setCoinlinks: any;
+    //   setTokenlinks: any;
     balance: string;
     //   setBalance: any;
     initialAmount: string;
@@ -13,7 +13,7 @@ export interface AdminPanelProps {
 }
 
 let initialState: AdminPanelProps = {
-    coinlinks: [],
+    tokenlinks: [],
     accounts: [],
     nfts: [],
     balance: "",
@@ -30,8 +30,8 @@ const walletSlice = createSlice({
         setNfts(state, action) {
             state.nfts = [...action.payload];
         },
-        setCoinLinks(state, action) {
-            state.coinlinks = [...action.payload];
+        setTokenlinks(state, action) {
+            state.tokenlinks = [...action.payload];
         },
         setAccounts(state, action) {
             state.accounts = [...action.payload];
@@ -44,8 +44,8 @@ const walletSlice = createSlice({
 
 // Select Balance
 export const getBalance = (state: RootState) => state.wallet.balance;
-// Select CoinLinks
-export const getCoinLinks = (state: RootState) => state.wallet.coinlinks;
+// Select Tokenlinks
+export const getTokenlinks = (state: RootState) => state.wallet.tokenlinks;
 // Select Accounts
 export const getAccounts = (state: RootState) => state.wallet.accounts;
 // Select InitialAmount
@@ -54,6 +54,6 @@ export const getInitialAmount = (state: RootState) =>
 // Select Nfts
 export const getNfts = (state: RootState) => state.wallet.nfts;
 
-export const {setBalance, setNfts, setCoinLinks, setAccounts, setInitialAmount} =
+export const {setBalance, setNfts, setTokenlinks, setAccounts, setInitialAmount} =
     walletSlice.actions;
 export default walletSlice.reducer;

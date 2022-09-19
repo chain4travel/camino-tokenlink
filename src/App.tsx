@@ -1,22 +1,22 @@
 import {useEffect, useState} from "react";
 import "./App.css";
 import {BrowserRouter, Route, Routes} from "react-router-dom";
-import Coinlink from "./components/Coinlink/Coinlink";
+import Tokenlink from "./components/Tokenlink/Tokenlink";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
 import {ethers} from "ethers";
-import {deployCoinlink, getCoinlinkFactoryBalance, getDeployedCoinlinks,} from "./services/web3Service";
+import {deployTokenlink, getTokenlinkFactoryBalance, getDeployedTokenlinks,} from "./services/web3Service";
 import {useWeb3} from "./Web3ModalContext";
 import MainLayout from "./components/Layout/MainLayout";
 import {useAppDispatch} from "./store";
 import {connectWeb3} from "./store/utils";
 import {useSelector} from "react-redux";
-import {getAccounts, getCoinLinks, setCoinLinks} from "./store/wallet";
+import {getAccounts, getTokenlinks, setTokenlinks} from "./store/wallet";
 import Account from "./components/Account/Account";
 
 const App = () => {
     const web3 = useWeb3();
     const dispatch = useAppDispatch();
-    const coinlinks = useSelector(getCoinLinks);
+    const tokenlinks = useSelector(getTokenlinks);
     const accounts = useSelector(getAccounts);
     const [factoryBalance, setFactoryBalance] = useState("");
     const [initialAmount, setInitialAmount] = useState("");
@@ -25,13 +25,13 @@ const App = () => {
         dispatch(connectWeb3());
     }, []);
 
-    const onDeployCoinlink = async () => {
+    const onDeployTokenlink = async () => {
         if (!web3.signer || !web3.provider) return;
         try {
-            const result = await deployCoinlink(web3.signer);
+            const result = await deployTokenlink(web3.signer);
             console.log("result", result);
-            dispatch(setCoinLinks(await getDeployedCoinlinks(web3.signer)));
-            const balance = await getCoinlinkFactoryBalance(web3.provider);
+            dispatch(setTokenlinks(await getDeployedTokenlinks(web3.signer)));
+            const balance = await getTokenlinkFactoryBalance(web3.provider);
             setFactoryBalance(ethers.utils.formatEther(balance));
         } catch (error) {
             console.error(error);
@@ -44,11 +44,11 @@ const App = () => {
                     path="/"
                     element={
                         <MainLayout
-                            coinlinks={coinlinks}
+                            tokenlinks={tokenlinks}
                             accounts={accounts}
                             initialAmount={initialAmount}
                             factoryBalance={factoryBalance}
-                            onDeployCoinlink={onDeployCoinlink}
+                            onDeployTokenlink={onDeployTokenlink}
                         />
                     }
                 >
@@ -63,7 +63,7 @@ const App = () => {
                             />
                         }
                     />
-                    <Route path="coinlinks/:address" element={<Coinlink/>}/>
+                    <Route path="tokenlinks/:address" element={<Tokenlink/>}/>
                     <Route path="accounts/:address" element={<Account/>}/>
                 </Route>
             </Routes>

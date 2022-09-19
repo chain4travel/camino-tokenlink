@@ -9,11 +9,11 @@ import {useAppDispatch, useAppSelector} from "../../store";
 import {connectWallet} from "../../store/utils";
 
 const MainLayout: FC<SideBarProps> = ({
-                                          coinlinks,
+                                          tokenlinks,
                                           accounts,
                                           initialAmount,
                                           factoryBalance,
-                                          onDeployCoinlink,
+                                          onDeployTokenlink,
                                       }) => {
     const dispatch = useAppDispatch();
     const signer = useAppSelector(getSigner);
@@ -34,11 +34,11 @@ const MainLayout: FC<SideBarProps> = ({
             <NavBar/>
             <Box sx={{display: "flex"}}>
                 <SideBar
-                    coinlinks={coinlinks}
+                    tokenlinks={tokenlinks}
                     accounts={accounts}
                     initialAmount={initialAmount}
                     factoryBalance={factoryBalance}
-                    onDeployCoinlink={onDeployCoinlink}
+                    onDeployTokenlink={onDeployTokenlink}
                 />
                 <Outlet/>
             </Box>

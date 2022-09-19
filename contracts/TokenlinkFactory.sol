@@ -5,14 +5,14 @@ import "@openzeppelin/contracts-upgradeable/proxy/utils/Initializable.sol";
 import "@openzeppelin/contracts/utils/Create2.sol";
 import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
-import "./Coinlink.sol";
+import "./Tokenlink.sol";
 
-contract CoinlinkFactory is Initializable {
+contract TokenlinkFactory is Initializable {
     using Counters for Counters.Counter;
 
     address public owner;
-    Counters.Counter private coinlinkIds;
-    Coinlink[] public coinlinks;
+    Counters.Counter private tokenlinkIds;
+    Tokenlink[] public tokenlinks;
     mapping(uint256 => uint256) public vars;
     uint8 public constant VAR_INITIAL_AMOUNT = 0;
 
@@ -38,10 +38,10 @@ contract CoinlinkFactory is Initializable {
     }
 
     function deploy() public restricted {
-        coinlinkIds.increment();
-        Coinlink _contract = new Coinlink{salt : bytes32(coinlinkIds.current())}(msg.sender, vars[VAR_INITIAL_AMOUNT]);
+        tokenlinkIds.increment();
+        Tokenlink _contract = new Tokenlink{salt : bytes32(tokenlinkIds.current())}(msg.sender, vars[VAR_INITIAL_AMOUNT]);
         payable(_contract).transfer(vars[VAR_INITIAL_AMOUNT]);
-        coinlinks.push(_contract);
+        tokenlinks.push(_contract);
         emit Deploy(address(_contract));
     }
 
@@ -57,20 +57,20 @@ contract CoinlinkFactory is Initializable {
     }
 
     function getBytecode(address _owner) public pure returns (bytes memory) {
-        bytes memory bytecode = type(Account).creationCode;
+        bytes memory bytecode = type(Tokenlink).creationCode;
         return abi.encodePacked(bytecode, abi.encode(_owner));
     }
 
     function getDeployedContracts() public view returns (address[] memory addresses) {
-        addresses = new address[](coinlinks.length);
-        for (uint i = 0; i < coinlinks.length; i++) {
-            addresses[i] = address(coinlinks[i]);
+        addresses = new address[](tokenlinks.length);
+        for (uint i = 0; i < tokenlinks.length; i++) {
+            addresses[i] = address(tokenlinks[i]);
         }
         return addresses;
     }
 
     function getLastDeployed() public view returns (address) {
-        return address(coinlinks[coinlinks.length - 1]);
+        return address(tokenlinks[tokenlinks.length - 1]);
     }
 
 }

@@ -1,10 +1,10 @@
 {
-    "name": "coinlink-poc",
+    "name": "tokenlink-poc",
     "version": "0.1.0",
     "private": true,
     "dependencies": {
         "@coinbase/wallet-sdk": "^3.4.0",
-        "@coinlink/contracts": "file:./build/contracts",
+        "@tokenlink/contracts": "file:./build/contracts",
         "@emotion/react": "^11.9.3",
         "@emotion/styled": "^11.9.3",
         "@mui/icons-material": "^5.10.2",

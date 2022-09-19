@@ -6,7 +6,7 @@ import "@openzeppelin/contracts/utils/Address.sol";
 import "@openzeppelin/contracts/utils/Counters.sol";
 import "./Account.sol";
 
-contract Coinlink {
+contract Tokenlink {
     using Counters for Counters.Counter;
 
     Counters.Counter private accountIds;

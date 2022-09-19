@@ -1,12 +1,12 @@
 import React, {useEffect, useState} from 'react';
-import './Coinlink.css';
+import './Tokenlink.css';
 import {useParams} from "react-router-dom";
 import {ethers} from "ethers";
 import {
-    changeCoinlinkOwner,
+    changeTokenlinkOwner,
     deployAccount,
     getDeployedAccounts,
-    saveCoinlinkVariable
+    saveTokenlinkVariable
 } from "../../services/web3Service";
 import {
     Button,
@@ -19,12 +19,12 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import coinlink from '@coinlink/contracts/Coinlink.json';
+import tokenlink from '@tokenlink/contracts/Tokenlink.json';
 import {useWeb3} from "../../Web3ModalContext";
 import {setAccounts} from "../../store/wallet";
 import {useAppDispatch} from "../../store";
 
-const Coinlink = () => {
+const Tokenlink = () => {
     const web3 = useWeb3();
     const params = useParams();
     const dispatch = useAppDispatch();
@@ -35,7 +35,7 @@ const Coinlink = () => {
     const [newOwner, setNewOwner] = useState('');
     const [key, setKey] = useState('');
     const [value, setValue] = useState('');
-    const [coinlinkContract, setCoinlinkContract] = useState<ethers.Contract>(new ethers.Contract(params.address as string, coinlink.abi, web3.provider));
+    const [tokenlinkContract, setTokenlinkContract] = useState<ethers.Contract>(new ethers.Contract(params.address as string, tokenlink.abi, web3.provider));
 
     useEffect(() => {
         const fetchData = async () => {
@@ -48,7 +48,7 @@ const Coinlink = () => {
         const fetchData = async () => {
             if (!web3.signer || !web3.provider || !web3.account) return;
             try {
-                setCoinlinkContract(new ethers.Contract(params.address as string, coinlink.abi, web3.signer));
+                setTokenlinkContract(new ethers.Contract(params.address as string, tokenlink.abi, web3.signer));
                 await fetchValues();
                 await fetchAccounts();
                 await fetchBalance();
@@ -61,38 +61,38 @@ const Coinlink = () => {
     }, [web3, params.address]);
 
     const fetchValues = async () => {
-        const varInitialAmount = await coinlinkContract.vars(0);
+        const varInitialAmount = await tokenlinkContract.vars(0);
         setInitialAmount(ethers.utils.formatEther(varInitialAmount));
-        const varReviewReward = await coinlinkContract.vars(1);
+        const varReviewReward = await tokenlinkContract.vars(1);
         setReviewReward(ethers.utils.formatEther(varReviewReward));
     }
 
     const fetchOwner = async () => {
-        const varOwner = await coinlinkContract.owner();
+        const varOwner = await tokenlinkContract.owner();
         setOwner(varOwner);
     }
 
     const fetchBalance = async () => {
         if (!web3.provider) return;
-        const balance = await web3.provider.getBalance(coinlinkContract.address);
+        const balance = await web3.provider.getBalance(tokenlinkContract.address);
         setBalance(ethers.utils.formatEther(balance));
     }
 
     const onDeployAccount = async () => {
-        const result = await deployAccount(coinlinkContract);
+        const result = await deployAccount(tokenlinkContract);
         console.log(result);
         await fetchAccounts();
         await fetchBalance();
     }
 
     const onChangeOwner = async () => {
-        await changeCoinlinkOwner(coinlinkContract, newOwner);
+        await changeTokenlinkOwner(tokenlinkContract, newOwner);
         await fetchOwner();
     }
 
     const fetchAccounts = async () => {
         if (!web3.signer) return;
-        const accounts = await getDeployedAccounts(coinlinkContract, web3.signer);
+        const accounts = await getDeployedAccounts(tokenlinkContract, web3.signer);
         console.log(accounts);
         dispatch(setAccounts(accounts))
     }
@@ -114,9 +114,9 @@ const Coinlink = () => {
         try {
             let result;
             if (key === '0' || key === '1') {
-                result = await saveCoinlinkVariable(coinlinkContract, key, ethers.utils.parseEther(value));
+                result = await saveTokenlinkVariable(tokenlinkContract, key, ethers.utils.parseEther(value));
             } else {
-                result = await saveCoinlinkVariable(coinlinkContract, key, value);
+                result = await saveTokenlinkVariable(tokenlinkContract, key, value);
             }
             console.log('result', result);
             await fetchValues();
@@ -130,7 +130,7 @@ const Coinlink = () => {
             <Typography variant="h5">Company</Typography>
             <Typography variant="body1" className='green-text uppercase'>Address</Typography>
             <Typography variant="body1">
-                {coinlinkContract.address}
+                {tokenlinkContract.address}
             </Typography>
             <Typography variant="body1" className='green-text uppercase'>
                 Owner
@@ -199,4 +199,4 @@ const Coinlink = () => {
     )
 };
 
-export default Coinlink;
+export default Tokenlink;

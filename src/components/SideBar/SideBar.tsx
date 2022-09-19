@@ -8,15 +8,15 @@ import PlusIcon from "@mui/icons-material/Add";
 import {ethers} from "ethers";
 
 export interface SideBarProps {
-    coinlinks: any[];
+    tokenlinks: any[];
     accounts: any[];
     initialAmount: string;
     factoryBalance: string;
-    onDeployCoinlink: any;
+    onDeployTokenlink: any;
 }
 
 const SideBar: FC<SideBarProps> = (props) => {
-    const {coinlinks, accounts, initialAmount, factoryBalance, onDeployCoinlink} = props;
+    const {tokenlinks, accounts, initialAmount, factoryBalance, onDeployTokenlink} = props;
     const web3 = useWeb3();
     return (
         <div className="flex flex-col m-4 gap-3 w-1/5">
@@ -34,17 +34,17 @@ const SideBar: FC<SideBarProps> = (props) => {
                     color="primary"
                     sx={{backgroundColor: "grey.700"}}
                     aria-label="add"
-                    onClick={onDeployCoinlink}
+                    onClick={onDeployTokenlink}
                 >
                     <PlusIcon/>
                 </Fab>
                 <Typography sx={{color: "primary.contrastText"}} variant="h6">New Company</Typography>
             </div>
-            {coinlinks.length > 0 && (<Divider className="divider" flexItem/>)}
-            {coinlinks.map((coinlink: ethers.Contract, index: number) => (
+            {tokenlinks.length > 0 && (<Divider className="divider" flexItem/>)}
+            {tokenlinks.map((tokenlink: ethers.Contract, index: number) => (
                 <Link
                     key={index}
-                    to={`/coinlinks/${coinlink.address}`}
+                    to={`/tokenlinks/${tokenlink.address}`}
                     className="flex items-center gap-2"
                 >
                     <Fab color="primary" sx={{backgroundColor: "grey.700"}} aria-label="add">

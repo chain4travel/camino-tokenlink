@@ -1,10 +1,10 @@
 const {upgradeProxy} = require('@openzeppelin/truffle-upgrades');
-const CoinlinkFactory = artifacts.require("CoinlinkFactory");
+const TokenlinkFactory = artifacts.require("TokenlinkFactory");
 const ExampleNft = artifacts.require("ExampleNft");
 
 module.exports = async function (deployer, network, accounts) {
-    const coinlinkFactory = await upgradeProxy(CoinlinkFactory.address, CoinlinkFactory, {deployer});
-    await coinlinkFactory.send(web3.utils.toWei('10', 'ether'));
+    const tokenlinkFactory = await upgradeProxy(TokenlinkFactory.address, TokenlinkFactory, {deployer});
+    await tokenlinkFactory.send(web3.utils.toWei('10', 'ether'));
     const exampleNft = await deployer.deploy(ExampleNft);
     await exampleNft.safeMint(accounts[0]);
 };
