@@ -77,4 +77,20 @@ contract Tokenlink {
         return address(accounts[accounts.length - 1]);
     }
 
+    function getOwnedAccounts(address _owner) public view returns (address[] memory ownedAccounts) {
+        address[] memory _ownedAccounts = new address[](accounts.length);
+        uint counter = 0;
+        for (uint i = 0; i < accounts.length; i++) {
+            if (accounts[i].owner() == _owner) {
+                _ownedAccounts[counter] = address(accounts[i]);
+                counter++;
+            }
+        }
+        ownedAccounts = new address[](counter);
+        for (uint i = 0; i < counter; i++) {
+            ownedAccounts[i] = _ownedAccounts[i];
+        }
+        return ownedAccounts;
+    }
+
 }

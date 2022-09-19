@@ -73,4 +73,20 @@ contract TokenlinkFactory is Initializable {
         return address(tokenlinks[tokenlinks.length - 1]);
     }
 
+    function getOwnedTokenlinks(address _owner) public view returns (address[] memory ownedTokenlinks) {
+        address[] memory _ownedTokenlinks = new address[](tokenlinks.length);
+        uint counter = 0;
+        for (uint i = 0; i < tokenlinks.length; i++) {
+            if (tokenlinks[i].owner() == _owner) {
+                _ownedTokenlinks[counter] = address(tokenlinks[i]);
+                counter++;
+            }
+        }
+        ownedTokenlinks = new address[](counter);
+        for (uint i = 0; i < counter; i++) {
+            ownedTokenlinks[i] = _ownedTokenlinks[i];
+        }
+        return ownedTokenlinks;
+    }
+
 }
