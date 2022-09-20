@@ -10,6 +10,7 @@ export interface AdminPanelProps {
     //   setBalance: any;
     initialAmount: string;
     //   setInitialAmount: any;
+    isAdmin: boolean;
 }
 
 let initialState: AdminPanelProps = {
@@ -18,6 +19,7 @@ let initialState: AdminPanelProps = {
     nfts: [],
     balance: "",
     initialAmount: "",
+    isAdmin: false,
 };
 
 const walletSlice = createSlice({
@@ -39,6 +41,9 @@ const walletSlice = createSlice({
         setInitialAmount(state, action) {
             state.initialAmount = action.payload;
         },
+        setIsAdmin(state, action) {
+            state.isAdmin = action.payload;
+        }
     },
 });
 
@@ -53,7 +58,9 @@ export const getInitialAmount = (state: RootState) =>
     state.wallet.initialAmount;
 // Select Nfts
 export const getNfts = (state: RootState) => state.wallet.nfts;
+// Select IsAdmin
+export const getIsAdmin = (state: RootState) => state.wallet.isAdmin;
 
-export const {setBalance, setNfts, setTokenlinks, setAccounts, setInitialAmount} =
+export const {setBalance, setNfts, setTokenlinks, setAccounts, setInitialAmount, setIsAdmin} =
     walletSlice.actions;
 export default walletSlice.reducer;

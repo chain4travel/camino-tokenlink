@@ -6,6 +6,8 @@ import DomainIcon from "@mui/icons-material/Domain";
 import HomeIcon from "@mui/icons-material/HomeOutlined";
 import PlusIcon from "@mui/icons-material/Add";
 import {ethers} from "ethers";
+import {useSelector} from "react-redux";
+import {getIsAdmin} from "../../store/wallet";
 
 export interface SideBarProps {
     tokenlinks: any[];
@@ -13,12 +15,12 @@ export interface SideBarProps {
     initialAmount: string;
     factoryBalance: string;
     onDeployTokenlink: any;
-    isAdmin: boolean;
 }
 
 const SideBar: FC<SideBarProps> = (props) => {
-    const {tokenlinks, accounts, initialAmount, factoryBalance, onDeployTokenlink, isAdmin} = props;
+    const {tokenlinks, accounts, initialAmount, factoryBalance, onDeployTokenlink} = props;
     const web3 = useWeb3();
+    const isAdmin = useSelector(getIsAdmin);
     return (
         <div className="flex flex-col m-4 gap-3 w-1/5">
             <Link to={`/`} className="flex items-center gap-2">

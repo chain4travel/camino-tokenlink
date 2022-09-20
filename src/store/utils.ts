@@ -6,9 +6,9 @@ import {
     getOwnedTokenlinks,
     getTokenlinkFactoryBalance,
     getTokenlinkFactoryInitialAmount,
-    getWalletNfts,
+    getWalletNfts, isTokenlinkFactoryAdmin,
 } from '../services/web3Service'
-import {setAccounts, setBalance, setInitialAmount, setNfts, setTokenlinks} from './wallet'
+import {setAccounts, setBalance, setInitialAmount, setIsAdmin, setNfts, setTokenlinks} from './wallet'
 
 export const connectWallet = createAsyncThunk(
     'connectWallet',
@@ -36,6 +36,8 @@ export const connectWallet = createAsyncThunk(
                 state.web3Resources.signer
             )
             dispatch(setAccounts(accounts))
+            const isAdmin = await isTokenlinkFactoryAdmin(state.web3Resources.signer);
+            dispatch(setIsAdmin(isAdmin))
         } catch (e) {
             console.error(e)
         }

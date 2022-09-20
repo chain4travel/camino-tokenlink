@@ -17,11 +17,10 @@ import {
     getTokenlinkFactoryAddress,
     getTokenlinkFactoryBalance,
     getTokenlinkFactoryInitialAmount,
-    isTokenlinkFactoryAdmin,
     saveTokenlinkFactoryVariable,
 } from "../../services/web3Service";
 import {ethers} from "ethers";
-import {getAccounts, getNfts, getTokenlinks, setNfts, setTokenlinks} from "../../store/wallet";
+import {getAccounts, getIsAdmin, getNfts, getTokenlinks, setNfts, setTokenlinks} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
 // @ts-ignore
@@ -46,14 +45,15 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
     const nfts = useSelector(getNfts);
     const accounts = useSelector(getAccounts);
     const tokenlinks = useSelector(getTokenlinks);
+    const isAdmin = useSelector(getIsAdmin);
     let navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
             await dispatch(connectWallet());
             await web3.connect();
-            if (web3.signer && !await isTokenlinkFactoryAdmin(web3.signer)) {
-                if(tokenlinks[0]) {
+            if (web3.signer && !isAdmin) {
+                if (tokenlinks[0]) {
                     navigate(`/tokenlinks/${tokenlinks[0].address}`);
                 } else if (accounts[0]) {
                     navigate(`/accounts/${accounts[0].address}`);
@@ -67,8 +67,8 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
         const fetchData = async () => {
             await dispatch(connectWallet());
             await onConnectWallet();
-            if (web3.signer && !await isTokenlinkFactoryAdmin(web3.signer)) {
-                if(tokenlinks[0]) {
+            if (web3.signer && !isAdmin) {
+                if (tokenlinks[0]) {
                     navigate(`/tokenlinks/${tokenlinks[0].address}`);
                 } else if (accounts[0]) {
                     navigate(`/accounts/${accounts[0].address}`);

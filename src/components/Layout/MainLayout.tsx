@@ -14,7 +14,6 @@ const MainLayout: FC<SideBarProps> = ({
                                           initialAmount,
                                           factoryBalance,
                                           onDeployTokenlink,
-                                          isAdmin
                                       }) => {
     const dispatch = useAppDispatch();
     const signer = useAppSelector(getSigner);
@@ -40,7 +39,6 @@ const MainLayout: FC<SideBarProps> = ({
                     initialAmount={initialAmount}
                     factoryBalance={factoryBalance}
                     onDeployTokenlink={onDeployTokenlink}
-                    isAdmin={isAdmin}
                 />
                 <Outlet/>
             </Box>
