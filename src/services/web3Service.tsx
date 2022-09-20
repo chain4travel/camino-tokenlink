@@ -37,25 +37,31 @@ export const getTokenlinkFactoryInitialAmount = (signer: ethers.Signer) => {
     return contract.vars(0);
 }
 
-export const getDeployedTokenlinks = async (signer: ethers.Signer) => {
+export const getOwnedTokenlinks = async (signer: ethers.Signer) => {
+    const address = await signer.getAddress();
     const contract = new ethers.Contract((tokenlinkFactory.networks as Networks)[networkId]?.address as string, tokenlinkFactory.abi, signer);
-    return (await contract.getDeployedContracts()).map((address: string) => {
+    return (await contract.getOwnedTokenlinks(address)).map((address: string) => {
         return new ethers.Contract(address, tokenlink.abi, signer);
     });
 }
 
 export const getOwnedAccounts = async (signer: ethers.Signer) => {
+    const address = await signer.getAddress();
     const tokenlinks = await getDeployedTokenlinks(signer);
-    console.log(tokenlinks);
-    let accounts = await Promise.all(tokenlinks.map(async (tokenlink: any) => {
-        return (await tokenlink.getDeployedContracts()).map((address: string) => {
-            return new ethers.Contract(address, account.abi, signer);
-        });
+    const accountsAddresses = await Promise.all(tokenlinks.map(async (tokenlink: ethers.Contract) => {
+        return tokenlink.getOwnedAccounts(address);
     }));
-    // TODO: Filter only accounts owned by the signer, same for tokenlinks
-    accounts = accounts.flat(Infinity);
+    const accounts = accountsAddresses.flatMap((account: string[]) => account)
+        .map((address: string) => new ethers.Contract(address, account.abi, signer));
     console.log(accounts);
     return accounts;
+}
+
+export const getDeployedTokenlinks = async (signer: ethers.Signer) => {
+    const contract = new ethers.Contract((tokenlinkFactory.networks as Networks)[networkId]?.address as string, tokenlinkFactory.abi, signer);
+    return (await contract.getDeployedContracts()).map((address: string) => {
+        return new ethers.Contract(address, tokenlink.abi, signer);
+    });
 }
 
 export const deployAccount = async (tokenlinkContract: ethers.Contract) => {

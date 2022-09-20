@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Tokenlink from "./components/Tokenlink/Tokenlink";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
 import {ethers} from "ethers";
-import {deployTokenlink, getTokenlinkFactoryBalance, getDeployedTokenlinks,} from "./services/web3Service";
+import {deployTokenlink, getOwnedTokenlinks, getTokenlinkFactoryBalance,} from "./services/web3Service";
 import {useWeb3} from "./Web3ModalContext";
 import MainLayout from "./components/Layout/MainLayout";
 import {useAppDispatch} from "./store";
@@ -30,7 +30,7 @@ const App = () => {
         try {
             const result = await deployTokenlink(web3.signer);
             console.log("result", result);
-            dispatch(setTokenlinks(await getDeployedTokenlinks(web3.signer)));
+            dispatch(setTokenlinks(await getOwnedTokenlinks(web3.signer)));
             const balance = await getTokenlinkFactoryBalance(web3.provider);
             setFactoryBalance(ethers.utils.formatEther(balance));
         } catch (error) {

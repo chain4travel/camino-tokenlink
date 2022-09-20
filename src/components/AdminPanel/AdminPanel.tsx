@@ -13,14 +13,14 @@ import {
 } from "@mui/material";
 import {useWeb3} from "../../Web3ModalContext";
 import {
+    getOwnedTokenlinks,
     getTokenlinkFactoryAddress,
     getTokenlinkFactoryBalance,
     getTokenlinkFactoryInitialAmount,
-    getDeployedTokenlinks,
     saveTokenlinkFactoryVariable,
 } from "../../services/web3Service";
 import {ethers} from "ethers";
-import {getNfts, setTokenlinks, setNfts} from "../../store/wallet";
+import {getNfts, setNfts, setTokenlinks} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
 // @ts-ignore
@@ -64,8 +64,7 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
             const balance = await getTokenlinkFactoryBalance(web3.provider);
             props.setBalance(ethers.utils.formatEther(balance));
             console.log(nfts);
-            const tokenlinks = await getDeployedTokenlinks(web3.signer);
-            dispatch(setTokenlinks(tokenlinks));
+            dispatch(setTokenlinks(await getOwnedTokenlinks(web3.signer)));
             const factoryAddress = getTokenlinkFactoryAddress();
             setFactoryAddress(factoryAddress);
         } catch (error) {
