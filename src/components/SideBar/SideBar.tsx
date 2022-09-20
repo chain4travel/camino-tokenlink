@@ -13,10 +13,11 @@ export interface SideBarProps {
     initialAmount: string;
     factoryBalance: string;
     onDeployTokenlink: any;
+    isAdmin: boolean;
 }
 
 const SideBar: FC<SideBarProps> = (props) => {
-    const {tokenlinks, accounts, initialAmount, factoryBalance, onDeployTokenlink} = props;
+    const {tokenlinks, accounts, initialAmount, factoryBalance, onDeployTokenlink, isAdmin} = props;
     const web3 = useWeb3();
     return (
         <div className="flex flex-col m-4 gap-3 w-1/5">
@@ -28,7 +29,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                     HOME
                 </Typography>
             </Link>
-            <div className="flex items-center gap-2">
+            {isAdmin && <div className="flex items-center gap-2">
                 <Fab
                     disabled={!web3.signer || +initialAmount > +factoryBalance}
                     color="primary"
@@ -39,7 +40,7 @@ const SideBar: FC<SideBarProps> = (props) => {
                     <PlusIcon/>
                 </Fab>
                 <Typography sx={{color: "primary.contrastText"}} variant="h6">New Company</Typography>
-            </div>
+            </div>}
             {tokenlinks.length > 0 && (<Divider className="divider" flexItem/>)}
             {tokenlinks.map((tokenlink: ethers.Contract, index: number) => (
                 <Link

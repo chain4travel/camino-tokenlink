@@ -4,7 +4,12 @@ import {BrowserRouter, Route, Routes} from "react-router-dom";
 import Tokenlink from "./components/Tokenlink/Tokenlink";
 import AdminPanel from "./components/AdminPanel/AdminPanel";
 import {ethers} from "ethers";
-import {deployTokenlink, getOwnedTokenlinks, getTokenlinkFactoryBalance,} from "./services/web3Service";
+import {
+    deployTokenlink,
+    getOwnedTokenlinks,
+    getTokenlinkFactoryBalance,
+    isTokenlinkFactoryAdmin,
+} from "./services/web3Service";
 import {useWeb3} from "./Web3ModalContext";
 import MainLayout from "./components/Layout/MainLayout";
 import {useAppDispatch} from "./store";
@@ -20,9 +25,20 @@ const App = () => {
     const accounts = useSelector(getAccounts);
     const [factoryBalance, setFactoryBalance] = useState("");
     const [initialAmount, setInitialAmount] = useState("");
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         dispatch(connectWeb3());
+    }, []);
+
+    useEffect(() => {
+        const fetchData = async () => {
+            await dispatch(connectWeb3());
+            if (web3.signer) {
+                setIsAdmin(await isTokenlinkFactoryAdmin(web3.signer))
+            }
+        };
+        fetchData().catch(console.error);
     }, []);
 
     const onDeployTokenlink = async () => {
@@ -49,6 +65,7 @@ const App = () => {
                             initialAmount={initialAmount}
                             factoryBalance={factoryBalance}
                             onDeployTokenlink={onDeployTokenlink}
+                            isAdmin={isAdmin}
                         />
                     }
                 >

@@ -17,15 +17,18 @@ import {
     getTokenlinkFactoryAddress,
     getTokenlinkFactoryBalance,
     getTokenlinkFactoryInitialAmount,
+    isTokenlinkFactoryAdmin,
     saveTokenlinkFactoryVariable,
 } from "../../services/web3Service";
 import {ethers} from "ethers";
-import {getNfts, setNfts, setTokenlinks} from "../../store/wallet";
+import {getAccounts, getNfts, getTokenlinks, setNfts, setTokenlinks} from "../../store/wallet";
 import {useSelector} from "react-redux";
 import {useAppDispatch} from "../../store";
 // @ts-ignore
 import Identicon from 'react-identicons';
 import NftDisplay from "../NftDisplay/NftDisplay";
+import {useNavigate} from "react-router-dom";
+import {connectWallet} from "../../store/utils";
 
 export interface AdminPanelProps {
     balance: string;
@@ -41,22 +44,41 @@ const AdminPanel: FC<AdminPanelProps> = (props) => {
     const [value, setValue] = useState("");
     const [factoryAddress, setFactoryAddress] = useState("");
     const nfts = useSelector(getNfts);
+    const accounts = useSelector(getAccounts);
+    const tokenlinks = useSelector(getTokenlinks);
+    let navigate = useNavigate();
 
     useEffect(() => {
         const fetchData = async () => {
+            await dispatch(connectWallet());
             await web3.connect();
+            if (web3.signer && !await isTokenlinkFactoryAdmin(web3.signer)) {
+                if(tokenlinks[0]) {
+                    navigate(`/tokenlinks/${tokenlinks[0].address}`);
+                } else if (accounts[0]) {
+                    navigate(`/accounts/${accounts[0].address}`);
+                }
+            }
         };
         fetchData().catch(console.error);
     }, []);
 
     useEffect(() => {
         const fetchData = async () => {
-            await connectWallet();
+            await dispatch(connectWallet());
+            await onConnectWallet();
+            if (web3.signer && !await isTokenlinkFactoryAdmin(web3.signer)) {
+                if(tokenlinks[0]) {
+                    navigate(`/tokenlinks/${tokenlinks[0].address}`);
+                } else if (accounts[0]) {
+                    navigate(`/accounts/${accounts[0].address}`);
+                }
+            }
         };
         fetchData().catch(console.error);
     }, [web3]);
 
-    const connectWallet = async () => {
+    const onConnectWallet = async () => {
         if (!web3.signer || !web3.provider || !web3.account) return;
         try {
             const initialAmount = await getTokenlinkFactoryInitialAmount(web3.signer);

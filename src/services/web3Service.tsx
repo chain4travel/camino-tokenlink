@@ -37,6 +37,13 @@ export const getTokenlinkFactoryInitialAmount = (signer: ethers.Signer) => {
     return contract.vars(0);
 }
 
+export const isTokenlinkFactoryAdmin = async (signer: ethers.Signer) => {
+    const address = await signer.getAddress();
+    const contract = new ethers.Contract((tokenlinkFactory.networks as Networks)[networkId]?.address as string, tokenlinkFactory.abi, signer);
+    const factoryOwner = await contract.owner();
+    return address === factoryOwner;
+}
+
 export const getOwnedTokenlinks = async (signer: ethers.Signer) => {
     const address = await signer.getAddress();
     const contract = new ethers.Contract((tokenlinkFactory.networks as Networks)[networkId]?.address as string, tokenlinkFactory.abi, signer);
@@ -48,12 +55,13 @@ export const getOwnedTokenlinks = async (signer: ethers.Signer) => {
 export const getOwnedAccounts = async (signer: ethers.Signer) => {
     const address = await signer.getAddress();
     const tokenlinks = await getDeployedTokenlinks(signer);
+    console.log("All tokenlinks", tokenlinks);
     const accountsAddresses = await Promise.all(tokenlinks.map(async (tokenlink: ethers.Contract) => {
         return tokenlink.getOwnedAccounts(address);
     }));
     const accounts = accountsAddresses.flatMap((account: string[]) => account)
         .map((address: string) => new ethers.Contract(address, account.abi, signer));
-    console.log(accounts);
+    console.log("accounts", accounts);
     return accounts;
 }
 
@@ -103,10 +111,4 @@ export const changeAccountOwner = async (accountContract: ethers.Contract, newOw
 export const changeTokenlinkOwner = async (tokenlinkContract: ethers.Contract, newOwner: string) => {
     const tx = await tokenlinkContract.changeOwner(newOwner);
     return tx.wait();
-}
-
-export const getDeployedAccounts = async (tokenlinkContract: ethers.Contract, signer: ethers.Signer) => {
-    return (await tokenlinkContract.getDeployedContracts()).map((address: string) => {
-        return new ethers.Contract(address, account.abi, signer);
-    });
 }

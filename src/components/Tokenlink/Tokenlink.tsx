@@ -2,12 +2,7 @@ import React, {useEffect, useState} from 'react';
 import './Tokenlink.css';
 import {useParams} from "react-router-dom";
 import {ethers} from "ethers";
-import {
-    changeTokenlinkOwner,
-    deployAccount,
-    getDeployedAccounts,
-    saveTokenlinkVariable
-} from "../../services/web3Service";
+import {changeTokenlinkOwner, deployAccount, getOwnedAccounts, saveTokenlinkVariable} from "../../services/web3Service";
 import {
     Button,
     Divider,
@@ -92,9 +87,7 @@ const Tokenlink = () => {
 
     const fetchAccounts = async () => {
         if (!web3.signer) return;
-        const accounts = await getDeployedAccounts(tokenlinkContract, web3.signer);
-        console.log(accounts);
-        dispatch(setAccounts(accounts))
+        dispatch(setAccounts(await getOwnedAccounts(web3.signer)))
     }
 
     const handleValueVariableChange = (event: { target: { value: React.SetStateAction<string>; }; }) => {
