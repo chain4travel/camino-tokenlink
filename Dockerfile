@@ -5,10 +5,11 @@ WORKDIR /app
 # Cache and Install dependencies
 COPY package.json .
 COPY package-lock.json .
-COPY truffle-config.js .
-COPY .openzeppelin .
-RUN npm install react-scripts@3.4.1 -g --silent
-RUN npm install truffle -g --silent
+#COPY truffle-config.js .
+#COPY .openzeppelin .
+#COPY contracts ./contracts
+#RUN npm install react-scripts@3.4.1 -g --silent
+#RUN npm install truffle -g --silent
 RUN npm ci --silent
 # Copy app files
 COPY . .
