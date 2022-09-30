@@ -4,7 +4,8 @@ import tokenlink from '@tokenlink/contracts/Tokenlink.json';
 import account from '@tokenlink/contracts/Account.json';
 import exampleNft from '@tokenlink/contracts/ExampleNft.json';
 
-let networkId = '5777';
+let networkId = process.env.REACT_APP_NETWORK_ID || "5777";
+console.log("networkId", networkId);
 export type Networks = Partial<Record<string, { address: string }>>;
 
 export const deployTokenlink = async (signer: ethers.Signer) => {

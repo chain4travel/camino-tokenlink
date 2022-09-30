@@ -25,3 +25,4 @@ yarn-error.log*
 #web3
 /contracts/artifacts
 /.openzeppelin/unknown-1337.json
+/src/abi

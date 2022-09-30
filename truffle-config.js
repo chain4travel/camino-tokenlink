@@ -18,6 +18,7 @@
  *
  */
 
+const path = require('path');
 require('dotenv').config();
 
 function hdWalletProviderOptions(privateKeyEnvVarValue, mnemonicPhraseEnvVarValue, otherOpts) {
@@ -48,6 +49,8 @@ module.exports = {
    *
    * $ truffle test --network <network-name>
    */
+
+  contracts_build_directory: path.join(__dirname, "/src/abi"),
 
   networks: {
     // Useful for testing. The `development` name is special - truffle uses it by default
