@@ -5,6 +5,7 @@ WORKDIR /app
 # Cache and Install dependencies
 COPY package.json .
 COPY package-lock.json .
+RUN npm install truffle -g --silent
 RUN npm ci --silent
 # Copy app files
 COPY . .

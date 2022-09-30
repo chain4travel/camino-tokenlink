@@ -54,6 +54,7 @@
         "test": "react-app-rewired test",
         "eject": "react-app-rewired eject",
         "format": "npx prettier --write .",
+        "prebuild": "truffle compile",
         "postbuild": "node scripts/manage-networks.js restore 502",
         "backup-networks": "node scripts/manage-networks.js backup"
     },
