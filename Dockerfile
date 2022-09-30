@@ -8,7 +8,7 @@ COPY package-lock.json .
 COPY truffle-config.js .
 RUN npm install react-scripts@3.4.1 -g --silent
 RUN npm install truffle -g --silent
-RUN npm install
+RUN npm ci --silent
 # Copy app files
 COPY . .
 # Build the app
