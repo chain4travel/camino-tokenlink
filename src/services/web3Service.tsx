@@ -1,8 +1,8 @@
 import {BigNumber, ethers} from "ethers";
-import tokenlinkFactory from '@tokenlink/contracts/TokenlinkFactory.json';
-import tokenlink from '@tokenlink/contracts/Tokenlink.json';
-import account from '@tokenlink/contracts/Account.json';
-import exampleNft from '@tokenlink/contracts/ExampleNft.json';
+import tokenlinkFactory from '../abi/TokenlinkFactory.json';
+import tokenlink from '../abi/Tokenlink.json';
+import account from '../abi/Account.json';
+import exampleNft from '../abi/ExampleNft.json';
 
 let networkId = process.env.REACT_APP_NETWORK_ID || "5777";
 console.log("networkId", networkId);

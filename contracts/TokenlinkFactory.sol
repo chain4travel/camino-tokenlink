@@ -49,6 +49,10 @@ contract TokenlinkFactory is Initializable {
         vars[_key] = _value;
     }
 
+    function changeOwner(address newOwner) public restricted {
+        owner = newOwner;
+    }
+
     // VIEWS
 
     function getAddress(bytes memory bytecode, uint _salt) public view returns (address) {

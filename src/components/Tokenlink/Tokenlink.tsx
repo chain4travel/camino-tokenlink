@@ -14,7 +14,7 @@ import {
     TextField,
     Typography
 } from "@mui/material";
-import tokenlink from '@tokenlink/contracts/Tokenlink.json';
+import tokenlink from '../../abi/Tokenlink.json';
 import {useWeb3} from "../../Web3ModalContext";
 import {setAccounts} from "../../store/wallet";
 import {useAppDispatch} from "../../store";

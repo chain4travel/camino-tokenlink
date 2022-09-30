@@ -4,7 +4,7 @@ import {useParams} from "react-router-dom";
 import {BigNumber, ethers} from "ethers";
 import {changeAccountOwner, getNfts, retrieveNfts} from "../../services/web3Service";
 import {Button, Divider, FormControl, TextField, Typography} from "@mui/material";
-import account from '@tokenlink/contracts/Account.json';
+import account from '../../abi/Account.json';
 import {useWeb3} from "../../Web3ModalContext";
 // @ts-ignore
 import Identicon from 'react-identicons';
