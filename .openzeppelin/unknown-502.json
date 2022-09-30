@@ -1,0 +1,93 @@
+{
+  "manifestVersion": "3.2",
+  "admin": {
+    "address": "0xaa85CD9c142f0D8357e6340117087C78D074eD42",
+    "txHash": "0x219bbd1873a6e25f7c25aabb2a3ccc77c2cd1eb7e170fb338853b62f08739d20"
+  },
+  "proxies": [
+    {
+      "address": "0x2a6F0500E356dF593Efc69bf42f7D4438Ec9B558",
+      "txHash": "0xaa09e638083ae1ee8451e5e84a3d55bfbe8ab0cfaf6ab362c45b8dc554496a65",
+      "kind": "transparent"
+    }
+  ],
+  "impls": {
+    "b9e5e53a446a892dd3138d2f166ca1d7df5a1af2ed364a2934ac4ee44469f8dc": {
+      "address": "0x81F06042aE92f18f1CC6Cb7163CFe3B0e0F9876E",
+      "txHash": "0x25ccf54e17673d612a286f8b5412fe0ce0656a6f2e99a74d19bf5117bfae0fe1",
+      "layout": {
+        "storage": [
+          {
+            "contract": "Initializable",
+            "label": "_initialized",
+            "type": "t_uint8",
+            "src": "..\\@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:62",
+            "retypedFrom": "bool"
+          },
+          {
+            "contract": "Initializable",
+            "label": "_initializing",
+            "type": "t_bool",
+            "src": "..\\@openzeppelin\\contracts-upgradeable\\proxy\\utils\\Initializable.sol:67"
+          },
+          {
+            "contract": "TokenlinkFactory",
+            "label": "owner",
+            "type": "t_address",
+            "src": "..\\project:\\contracts\\TokenlinkFactory.sol:13"
+          },
+          {
+            "contract": "TokenlinkFactory",
+            "label": "tokenlinkIds",
+            "type": "t_struct(Counter)2226_storage",
+            "src": "..\\project:\\contracts\\TokenlinkFactory.sol:14"
+          },
+          {
+            "contract": "TokenlinkFactory",
+            "label": "tokenlinks",
+            "type": "t_array(t_contract(Tokenlink)3358)dyn_storage",
+            "src": "..\\project:\\contracts\\TokenlinkFactory.sol:15"
+          },
+          {
+            "contract": "TokenlinkFactory",
+            "label": "vars",
+            "type": "t_mapping(t_uint256,t_uint256)",
+            "src": "..\\project:\\contracts\\TokenlinkFactory.sol:16"
+          }
+        ],
+        "types": {
+          "t_address": {
+            "label": "address"
+          },
+          "t_struct(Counter)2226_storage": {
+            "label": "struct Counters.Counter",
+            "members": [
+              {
+                "label": "_value",
+                "type": "t_uint256"
+              }
+            ]
+          },
+          "t_uint256": {
+            "label": "uint256"
+          },
+          "t_array(t_contract(Tokenlink)3358)dyn_storage": {
+            "label": "contract Tokenlink[]"
+          },
+          "t_contract(Tokenlink)3358": {
+            "label": "contract Tokenlink"
+          },
+          "t_mapping(t_uint256,t_uint256)": {
+            "label": "mapping(uint256 => uint256)"
+          },
+          "t_uint8": {
+            "label": "uint8"
+          },
+          "t_bool": {
+            "label": "bool"
+          }
+        }
+      }
+    }
+  }
+}
