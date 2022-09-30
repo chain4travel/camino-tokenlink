@@ -3,12 +3,11 @@ ENV NODE_ENV production
 # Add a work directory
 WORKDIR /app
 # Cache and Install dependencies
-COPY package.json .
-COPY package-lock.json .
+COPY . .
 RUN npm install truffle -g --silent
 RUN npm ci --silent
-# Copy app files
-COPY . .
+RUN truffle compile
+
 # Build the app
 RUN npm run build
 
